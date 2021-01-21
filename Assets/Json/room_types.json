@@ -1,0 +1,5 @@
+{"0":
+	{ "name" : "office", "min_area" : 100.0, "BHoM_Guid" : "122d63bc-a491-4667-893c-db987e1254d0" },
+ "1":
+	{ "name" : "classroom", "min_area" : 120.0, "BHoM_Guid" : "acef4444-0b4e-4839-aff4-01486473b741" }
+}
