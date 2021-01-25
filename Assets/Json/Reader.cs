@@ -11,9 +11,14 @@ public class Reader : MonoBehaviour
     #region Public Variables
     public List<string> fileNames = new List<string>();
 
+    public Dictionary<string, JObject> jsonFolder =
+new Dictionary<string, JObject>();
+
     [HideInInspector]
     public int jsonCount;
-    public List<JObject> jsons = new List<JObject>();
+    //public List<JObject> jsons = new List<JObject>();
+
+
     #endregion
 
     #region Private Variables
@@ -30,10 +35,14 @@ public class Reader : MonoBehaviour
         for (int i = 0; i < fileNames.Count; i++)
         {
             StreamReader streamReader = new StreamReader(homePath + relativeJsonpath + fileNames[i]);
-            jsons.Add(JObject.Parse(streamReader.ReadToEnd()));
+
+            var json = JObject.Parse(streamReader.ReadToEnd());
+            jsonFolder.Add(fileNames[i].Split('.')[0], json);
+
             streamReader.Close();
         }
 
-        jsonCount = jsons.Count;
+        jsonCount = jsonFolder.Count;
+
     }
 }
