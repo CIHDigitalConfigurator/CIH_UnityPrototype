@@ -51,7 +51,7 @@ Currently using version 2020.1.15f1
 2. 'Room type' IN:
    - name (string)
    - min area (float)
-   - "banned adjacencies" (List<string>)
+   - "banned adjacencies" (List<string/ID>)
    - min height (float)
    - max aspect ratio (float)
    - PHASE II: circulation (bool) 
@@ -61,12 +61,12 @@ Currently using version 2020.1.15f1
 3. 'Room' OUT:
    - name (string)
    - type (enum)
-   - vertices (List<Vector3>)
+   - vertices (List\<Vector3>)
    - edges - internal/ external (List<(int,int)>)
    - height (float)
    - level (float)
-   - adjacencies (List<string/IDs>)
-   - warning log (List<string> or dict)
+   - adjacencies (List<string/ID>)
+   - warning log (List\<string> or dict)
    - PHASE II: outputs (...)
 
 #### Proposed 'room type' list:
