@@ -45,4 +45,23 @@ new Dictionary<string, JObject>();
         jsonCount = jsonFolder.Count;
 
     }
+
+    public bool JsonsAreLoaded()
+    {
+        if (this.GetComponent<Reader>().jsonCount == this.GetComponent<Reader>().fileNames.Count)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool LayersAreLoaded()
+    {
+        if (this.GetComponent<LayerInitializer>().layersCompleted)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }

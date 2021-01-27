@@ -128,42 +128,6 @@ public class UIController : MonoBehaviour
 
     }
     
-    //JS
-    
-    public float ReadDistFromJson(GameObject gameObject)
-    {
-
-        float dist;
-        //read json
-        string path = "Assets/Json/set_data.json";
-        StreamReader a = new StreamReader(path);
-        JObject json = JObject.Parse(a.ReadToEnd());
-
-        if (gameObject.tag == "wall")
-        {
-            dist = json[gameObject.tag]["width"].Value<float>() * 2;
-        }
-        else
-        {
-            dist = json[gameObject.tag]["width"].Value<float>();
-        }
-
-
-        return dist;
-    }
-
-    
-    public void InstantiateObject(GameObject gameObject)
-    {
-
-
-        var list = GameObject.FindGameObjectsWithTag(gameObject.tag);
-        var indx = 0;
-        if (list != null) indx = list.Length;
-        float dist = ReadDistFromJson(gameObject);
-        Instantiate(gameObject, new Vector3(indx * dist, gameObject.transform.position.y, gameObject.transform.position.z), gameObject.transform.rotation);
-    }
-
     ///<remarks>
     ///NW
     ///[MenuItem("AssetDatabase/LoadAllAssetsAtPath")]

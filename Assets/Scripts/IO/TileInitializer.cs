@@ -27,14 +27,16 @@ public class TileInitializer : MonoBehaviour
 
     IEnumerator WaitUntilJsonsAndExecute()
     {
-        yield return new WaitUntil(JsonsAreLoaded);
+        yield return new WaitUntil(() => GetComponent<LayerInitializer>().layersCompleted);
 
         // Get tiles values from dictionary to array
         JArray tileArray = JArray.Parse(GetComponent<Reader>().jsonFolder["tile"]["tile"].ToString());
 
         // create parent gameobject
-        parentTile = new GameObject();
-        parentTile.name = "tiles";
+        parentTile = new GameObject
+        {
+            name = "tiles"
+        };
 
         // Build game object based on information stored in json
         childrenTiles = new List<GameObject>();
@@ -51,6 +53,7 @@ public class TileInitializer : MonoBehaviour
         GameObject tile = GameObject.CreatePrimitive(PrimitiveType.Cube);
         tile.transform.SetParent(parent.transform, false);
         tile.GetComponent<MeshRenderer>().material = m;
+        tile.layer = LayerMask.NameToLayer("Level " + parameters["level"].ToObject<string>());
 
         // attach eg object
         var eg_tile = tile.AddComponent<EG_tile>();
@@ -70,13 +73,5 @@ public class TileInitializer : MonoBehaviour
         return tile;
     }
 
-    bool JsonsAreLoaded()
-    {
-        if (this.GetComponent<Reader>().jsonCount == this.GetComponent<Reader>().fileNames.Count)
-        {
-            return true;
-        }
-        return false;
-    }
 
 }
