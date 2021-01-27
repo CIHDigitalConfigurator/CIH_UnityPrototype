@@ -18,14 +18,7 @@ public class LayerInitializer : MonoBehaviour
     
     void Start()
     {
-        StartCoroutine(WaitUntilJsonsAndExecute());
-
         //cam.cullingMask |= 1 << LayerMask.NameToLayer("Level 03");
-    }
-
-    IEnumerator WaitUntilJsonsAndExecute()
-    {
-        yield return new WaitUntil(GetComponent<Reader>().JsonsAreLoaded);
 
         // Get tiles values from dictionary to array
         JArray tileArray = JArray.Parse(GetComponent<Reader>().jsonFolder["level"]["level"].ToString());
@@ -46,8 +39,8 @@ public class LayerInitializer : MonoBehaviour
         }
         layersCompleted = true;
 
-
     }
+
 
    /////////////////////////////////////////////////////////////////////
 

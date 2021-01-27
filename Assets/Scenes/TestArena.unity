@@ -921,6 +921,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1008,6 +1009,19 @@ MonoBehaviour:
   SensitivityRotation: 2
   SensitivityPosition: 2
   SensitivityScroll: 6
+--- !u!114 &963194230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd0c1acf04b62504bbc0df84630258d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layerReader: {fileID: 1961192739}
 --- !u!1 &999847550
 GameObject:
   m_ObjectHideFlags: 0
@@ -1545,7 +1559,7 @@ PrefabInstance:
     - target: {fileID: 3937864570721921211, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -100
+      value: -99
       objectReference: {fileID: 0}
     - target: {fileID: 3937864570721921211, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
@@ -1961,6 +1975,7 @@ GameObject:
   - component: {fileID: 1961192740}
   - component: {fileID: 1961192742}
   - component: {fileID: 1961192741}
+  - component: {fileID: 1961192743}
   m_Layer: 0
   m_Name: JsonReader
   m_TagString: Untagged
@@ -2011,7 +2026,19 @@ MonoBehaviour:
   - set_data.json
   - tile.json
   - level.json
-  jsonCount: 0
+--- !u!114 &1961192743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961192739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d833faf3d9e61514089637edeba26404, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  layersCompleted: 0
 --- !u!114 &2097682566 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6235146385714688424, guid: 2f88faa420128e345a5b17f255b859e4,
@@ -2045,9 +2072,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6235146385714688420, guid: 2f88faa420128e345a5b17f255b859e4,
         type: 3}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 963194225}
+    - target: {fileID: 6235146385714688420, guid: 2f88faa420128e345a5b17f255b859e4,
+        type: 3}
       propertyPath: MainCanvas
       value: 
       objectReference: {fileID: 1718370003}
+    - target: {fileID: 6235146385714688420, guid: 2f88faa420128e345a5b17f255b859e4,
+        type: 3}
+      propertyPath: jsonReader
+      value: 
+      objectReference: {fileID: 1961192739}
     - target: {fileID: 6235146385714688420, guid: 2f88faa420128e345a5b17f255b859e4,
         type: 3}
       propertyPath: mainCanvas
@@ -2074,6 +2111,12 @@ PrefabInstance:
       propertyPath: buttonPrefab
       value: 
       objectReference: {fileID: 3937864570721921212, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+    - target: {fileID: 6235146385714688420, guid: 2f88faa420128e345a5b17f255b859e4,
+        type: 3}
+      propertyPath: togglePrefab
+      value: 
+      objectReference: {fileID: 7319645541949027203, guid: b007d2fbebf6c784bba79cb012f48adc,
         type: 3}
     - target: {fileID: 6235146385714688423, guid: 2f88faa420128e345a5b17f255b859e4,
         type: 3}

@@ -8,7 +8,7 @@ public class VisibilityController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(WaitUntilLayers());
+        //StartCoroutine(WaitUntilLayers());
         
     }
 
@@ -24,22 +24,22 @@ public class VisibilityController : MonoBehaviour
         LayerCullingHide(Camera.main, "Level 3");
     }
 
-    public static void LayerCullingShow(Camera cam, int layerMask)
+    public void LayerCullingShow(Camera cam, int layerMask)
     {
         cam.cullingMask |= layerMask;
     }
 
-    public static void LayerCullingShow(Camera cam, string layer)
+    public void LayerCullingShow(Camera cam, string layer)
     {
         LayerCullingShow(cam, 1 << LayerMask.NameToLayer(layer));
     }
 
-    public static void LayerCullingHide(Camera cam, int layerMask)
+    public void LayerCullingHide(Camera cam, int layerMask)
     {
         cam.cullingMask &= ~layerMask;
     }
 
-    public static void LayerCullingHide(Camera cam, string layer)
+    public void LayerCullingHide(Camera cam, string layer)
     {
         LayerCullingHide(cam, 1 << LayerMask.NameToLayer(layer));
     }

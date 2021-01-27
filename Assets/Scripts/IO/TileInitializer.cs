@@ -27,7 +27,7 @@ public class TileInitializer : MonoBehaviour
 
     IEnumerator WaitUntilJsonsAndExecute()
     {
-        yield return new WaitUntil(() => GetComponent<LayerInitializer>().layersCompleted);
+        yield return new WaitUntil(() => this.GetComponent<LayerInitializer>().layersCompleted);
 
         // Get tiles values from dictionary to array
         JArray tileArray = JArray.Parse(GetComponent<Reader>().jsonFolder["tile"]["tile"].ToString());

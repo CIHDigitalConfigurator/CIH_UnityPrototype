@@ -14,11 +14,6 @@ public class Reader : MonoBehaviour
     public Dictionary<string, JObject> jsonFolder =
 new Dictionary<string, JObject>();
 
-    [HideInInspector]
-    public int jsonCount;
-    //public List<JObject> jsons = new List<JObject>();
-
-
     #endregion
 
     #region Private Variables
@@ -27,7 +22,7 @@ new Dictionary<string, JObject>();
     string homePath;
     #endregion
 
-    void Start()
+    void Awake()
     {
         homePath = Environment.GetEnvironmentVariable("HOMEPATH");
 
@@ -36,32 +31,10 @@ new Dictionary<string, JObject>();
         {
             StreamReader streamReader = new StreamReader(homePath + relativeJsonpath + fileNames[i]);
 
-            var json = JObject.Parse(streamReader.ReadToEnd());
+            JObject json = JObject.Parse(streamReader.ReadToEnd());
             jsonFolder.Add(fileNames[i].Split('.')[0], json);
 
             streamReader.Close();
         }
-
-        jsonCount = jsonFolder.Count;
-
     }
-
-    public bool JsonsAreLoaded()
-    {
-        if (this.GetComponent<Reader>().jsonCount == this.GetComponent<Reader>().fileNames.Count)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    public bool LayersAreLoaded()
-    {
-        if (this.GetComponent<LayerInitializer>().layersCompleted)
-        {
-            return true;
-        }
-        return false;
-    }
-
 }

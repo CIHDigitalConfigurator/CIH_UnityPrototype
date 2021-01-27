@@ -20,20 +20,29 @@ public class UIController : MonoBehaviour
     #region Private Variables
     MovementController movementController;
     RaycastController raycastController;
+    VisibilityController visibilityController;
 
     #endregion
 
     #region Public Variables
     public Canvas mainCanvas;
     public GameObject buttonPrefab;
+    public GameObject togglePrefab;
     public GameObject errorScreen;
+    public GameObject jsonReader;
+
 
     #endregion
     void Awake() 
     {
         movementController = gameObject.GetComponent<MovementController>();
         raycastController = gameObject.GetComponent<RaycastController>();
+        visibilityController = Camera.main.GetComponent<VisibilityController>();
         SpawnButtons();
+
+
+        SpawnLevelButtons();
+
     }
 
 
@@ -61,6 +70,39 @@ public class UIController : MonoBehaviour
            
     }
 
+    private void SpawnLevelButtons()
+    {
+        // Get level values from dictionary to array
+        JArray levelData = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["level"]["level"].ToString());
+
+        for (int i = 0; i < levelData.Count; i++)
+        {
+            GameObject button = Instantiate(togglePrefab);
+            button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
+            button.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
+            button.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(-50f, -200f - i*25);
+
+            var name = "Level " + levelData[i]["name"].ToString();
+
+            button.GetComponentInChildren<Text>().text = name;
+            button.GetComponent<Toggle>().onValueChanged.AddListener((value) => LayerToggle(value, name));
+        }
+    }
+
+    private void LayerToggle(bool isOn, string name)
+    {
+        if (isOn)
+        {
+            visibilityController.LayerCullingShow(Camera.main, name);
+        }
+        else
+        {
+            visibilityController.LayerCullingHide(Camera.main, name);
+        }
+    }
+
+
     private void SpawnButtons() 
     {
         string path = "Assets/Json/room_types.json";
@@ -79,6 +121,8 @@ public class UIController : MonoBehaviour
 
     }
 
+    //private void CallTurnOffLayer
+
     private void InstantiateButton(string rName,  float posX, float posY, float minSize, Color rColour, Color rColourO)
     {
         GameObject button = Instantiate(buttonPrefab);
@@ -93,7 +137,7 @@ public class UIController : MonoBehaviour
 
         // add the create room function
         button.GetComponent<Button>().onClick.AddListener(() => CallCreateRoom(rName,  minSize, rColour, rColourO));
-
+        
     }
 
     private void CallCreateRoom(string rName,  float minSize, Color rColour, Color rColourO) 
