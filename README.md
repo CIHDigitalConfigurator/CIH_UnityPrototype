@@ -62,10 +62,11 @@ Currently using version 2020.1.15f1
    - name (string)
    - type (enum)
    - vertices (List\<Vector3>)
-   - edges - internal/ external (List<(int,int)>)
+   - edges - internal/ external (List<(int,int,bool)>)
    - height (float)
    - level (float)
    - adjacencies (List<string/ID>)
+   - form factor (float)
    - warning log (List\<string> or dict)
    - PHASE II: outputs (...)
 
