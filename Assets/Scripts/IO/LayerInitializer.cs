@@ -11,7 +11,7 @@ public class LayerInitializer : MonoBehaviour
     //private static int maxTags = 10000;
     private static int maxLayers = 31;
 
-    List<OM_level> levels;
+    public List<OM_level> levels;
 
     public bool layersCompleted = false;
 
@@ -25,18 +25,30 @@ public class LayerInitializer : MonoBehaviour
 
         levels = new List<OM_level>();
 
-        foreach (JToken tileData in tileArray)
+        for (int i = 0; i < tileArray.Count; i++)
         {
-            AddNewLayer("Level " + tileData["name"].ToObject<string>());
+            AddNewLayer("Level " + tileArray[i]["name"].ToObject<string>());
+
+            var height = 0.0f;
+            if (i < tileArray.Count -1)
+            {
+                height = tileArray[i + 1]["elevation"].ToObject<float>() - tileArray[i]["elevation"].ToObject<float>();
+            }
+            else
+            {
+                height = tileArray[i]["elevation"].ToObject<float>() * 2;
+            }
 
             OM_level level = new OM_level
             {
-                Name = tileData["name"].ToObject<string>(),
-                Elevation = tileData["elevation"].ToObject<float>()
+                Name = tileArray[i]["name"].ToObject<string>(),
+                Elevation = tileArray[i]["elevation"].ToObject<float>(),
+                Height = height
             };
 
             levels.Add(level);
         }
+
         layersCompleted = true;
 
     }

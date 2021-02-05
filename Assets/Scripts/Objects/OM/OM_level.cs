@@ -9,6 +9,7 @@ namespace OM
     {
         public string Name { get; set; }
         public float Elevation { get; set; }
+        public float Height { get; set; }
 
     }
 }

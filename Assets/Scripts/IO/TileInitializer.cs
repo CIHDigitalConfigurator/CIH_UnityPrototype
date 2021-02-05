@@ -35,7 +35,7 @@ public class TileInitializer : MonoBehaviour
         // create parent gameobject
         parentTile = new GameObject
         {
-            name = "tiles"
+            name = "TILE"
         };
 
         // Build game object based on information stored in json

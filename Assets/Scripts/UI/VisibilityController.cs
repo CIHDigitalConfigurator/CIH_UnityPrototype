@@ -1,46 +1,88 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class VisibilityController : MonoBehaviour
 {
-    public GameObject layerReader;
+    public GameObject jsonReader;
+    List<GameObject> parents;
+    List<OM.OM_level> levels;
+
     // Start is called before the first frame update
     void Start()
     {
-        //StartCoroutine(WaitUntilLayers());
-        
+        // Wait few seconds for objects to initialize from json
+        StartCoroutine(DelayStart());
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator DelayStart()
     {
+        yield return new WaitForSeconds(2);
+
+        // Find all parent GameObject names
+        var keys = jsonReader.GetComponent<Reader>().jsonFolder.Keys.ToArray();
+        parents = FindParents(keys);
+
+        // Find all levels
+        levels = jsonReader.GetComponent<LayerInitializer>().levels;
 
     }
 
-    IEnumerator WaitUntilLayers()
+    List<GameObject> FindParents(string[] parentNames)
     {
-        yield return new WaitUntil(() => layerReader.GetComponent<LayerInitializer>().layersCompleted);
-        LayerCullingHide(Camera.main, "Level 3");
+        var parents = from name in parentNames
+                      where GameObject.Find(name.ToUpper()) != null
+                      select GameObject.Find(name.ToUpper());
+
+        return parents.ToList();
     }
 
-    public void LayerCullingShow(Camera cam, int layerMask)
+
+    public void LevelHide(string layerName)
     {
-        cam.cullingMask |= layerMask;
+        Tuple<float,float> leveRange = FindLevelRanges(levels, layerName);
+        LoopThroughChildrenAndToggleVisibilityInRange(parents, leveRange.Item1, leveRange.Item2, false);
+
     }
 
-    public void LayerCullingShow(Camera cam, string layer)
+    public void LevelShow(string layerName)
     {
-        LayerCullingShow(cam, 1 << LayerMask.NameToLayer(layer));
+        Tuple<float, float> leveRange = FindLevelRanges(levels, layerName);
+        LoopThroughChildrenAndToggleVisibilityInRange(parents, leveRange.Item1, leveRange.Item2, true);
     }
 
-    public void LayerCullingHide(Camera cam, int layerMask)
+    Tuple<float, float> FindLevelRanges(List<OM.OM_level> lvls, string layerName)
     {
-        cam.cullingMask &= ~layerMask;
+        var levelFromName = lvls.First(x => x.Name == layerName.Split(' ')[1]);
+
+        var rangeStart = levelFromName.Elevation;
+        var rangeEnd = rangeStart + levelFromName.Height;
+
+        return Tuple.Create(rangeStart, rangeEnd);
     }
 
-    public void LayerCullingHide(Camera cam, string layer)
+
+    void LoopThroughChildrenAndToggleVisibilityInRange(List<GameObject> parents, float min, float max, bool On)
     {
-        LayerCullingHide(cam, 1 << LayerMask.NameToLayer(layer));
+        foreach (GameObject parent in parents)
+        {
+            ToggleChildrenVisibilityInRange(parent, min, max, On);
+        }
     }
+
+    void ToggleChildrenVisibilityInRange(GameObject parent, float min, float max, bool on)
+    {
+        for (int i = 0; i < parent.gameObject.transform.childCount; i++)
+        {
+            var height = parent.gameObject.transform.GetChild(i).transform.position.y;
+
+            if (height >= min && height < max)
+            {
+                parent.gameObject.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = on;
+            }
+        }
+    }
+
 }

@@ -20,6 +20,7 @@ public class UIController : MonoBehaviour
     #region Private Variables
     MovementController movementController;
     RaycastController raycastController;
+    LayerVisibilityController layervisibilityController;
     VisibilityController visibilityController;
 
     #endregion
@@ -37,12 +38,17 @@ public class UIController : MonoBehaviour
     {
         movementController = gameObject.GetComponent<MovementController>();
         raycastController = gameObject.GetComponent<RaycastController>();
-        visibilityController = Camera.main.GetComponent<VisibilityController>();
+        layervisibilityController = Camera.main.GetComponent<LayerVisibilityController>();
         SpawnButtons();
 
 
         SpawnLevelButtons();
 
+    }
+
+    void Start()
+    {
+        visibilityController = gameObject.GetComponent<VisibilityController>();
     }
 
 
@@ -94,11 +100,14 @@ public class UIController : MonoBehaviour
     {
         if (isOn)
         {
-            visibilityController.LayerCullingShow(Camera.main, name);
+            //layervisibilityController.LayerCullingShow(Camera.main, name);
+            visibilityController.LevelShow(name);
         }
         else
         {
-            visibilityController.LayerCullingHide(Camera.main, name);
+            //layervisibilityController.LayerCullingHide(Camera.main, name);
+            visibilityController.LevelHide(name);
+
         }
     }
 
