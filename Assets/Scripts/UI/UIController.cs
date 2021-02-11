@@ -22,7 +22,8 @@ public class UIController : MonoBehaviour
     RaycastController raycastController;
     LayerVisibilityController layervisibilityController;
     VisibilityController visibilityController;
-
+    CameraViewsControler cameraViewsControler;
+    
     #endregion
 
     #region Public Variables
@@ -31,6 +32,8 @@ public class UIController : MonoBehaviour
     public GameObject togglePrefab;
     public GameObject errorScreen;
     public GameObject jsonReader;
+    public GameObject panelPrefab;
+    public GameObject jsonWriter;
 
 
     #endregion
@@ -39,9 +42,11 @@ public class UIController : MonoBehaviour
         movementController = gameObject.GetComponent<MovementController>();
         raycastController = gameObject.GetComponent<RaycastController>();
         layervisibilityController = Camera.main.GetComponent<LayerVisibilityController>();
+
+        cameraViewsControler = gameObject.GetComponent<CameraViewsControler>();
+
         SpawnButtons();
-
-
+        SpawnCameraButton();
         SpawnLevelButtons();
 
     }
@@ -52,7 +57,11 @@ public class UIController : MonoBehaviour
     }
 
 
-
+    public void SendToJson()
+    {
+        jsonWriter.GetComponent<Writer>().WriteJson();
+    }
+    
     public void PauseGame() 
     {
         /// <summary>
@@ -76,6 +85,24 @@ public class UIController : MonoBehaviour
            
     }
 
+    public void Validate()
+    {
+        GameObject panel = Instantiate(panelPrefab);
+        panel.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
+    }
+
+    private void SpawnCameraButton()
+    {
+        GameObject button = Instantiate(togglePrefab);
+        button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
+        button.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1);
+        button.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
+        button.GetComponent<RectTransform>().anchoredPosition = new Vector2(100f, -400f);
+
+        button.GetComponentInChildren<Text>().text = "2D";
+        button.GetComponent<Toggle>().onValueChanged.AddListener((value) => cameraViewsControler.Toggle2D3D(value));
+    }
+
     private void SpawnLevelButtons()
     {
         // Get level values from dictionary to array
@@ -85,9 +112,9 @@ public class UIController : MonoBehaviour
         {
             GameObject button = Instantiate(togglePrefab);
             button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
-            button.GetComponent<RectTransform>().anchorMin = new Vector2(1, 1);
-            button.GetComponent<RectTransform>().anchorMax = new Vector2(1, 1);
-            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(-50f, -200f - i*25);
+            button.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1);
+            button.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(100f, -200f - i*25);
 
             var name = "Level " + levelData[i]["name"].ToString();
 
@@ -123,8 +150,8 @@ public class UIController : MonoBehaviour
             //Debug.Log(json[i.ToString()]["name"]);
             string rName = json[i.ToString()]["name"].ToString().ToUpper();
             float minSize = float.Parse(json[i.ToString()]["min_area"].ToString());
-            Color rColour = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
-            Color rColourO = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+            Color rColour = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
+            Color rColourO = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
             InstantiateButton(rName, 100f, -50-i*35, minSize, rColour, rColourO);
         }
 
