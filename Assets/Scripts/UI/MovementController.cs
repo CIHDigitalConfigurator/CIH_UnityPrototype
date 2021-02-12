@@ -186,13 +186,9 @@ public class MovementController : MonoBehaviour
         currentArea = rArea;
 
 
-        var vertices = tempRoom.GetComponent<MeshFilter>().mesh.vertices.ToList();
+        var vertices = tempRoom.GetComponent<MeshFilter>().sharedMesh.vertices.ToList();
+        var triangles = tempRoom.GetComponent<MeshFilter>().sharedMesh.triangles.ToList();
 
-        List < Vector3 > listvecs = new List<Vector3>();
-        vertices.ForEach((item) => 
-        { 
-            listvecs.Add(new Vector3(item.x, item.y, item.z)); 
-        });
 
         if (rArea >= minSize)
         {
@@ -202,11 +198,13 @@ public class MovementController : MonoBehaviour
             CurrentRoom.GetComponent<Renderer>().material = matTemplate;
             CurrentRoom.GetComponent<Renderer>().material.SetColor("_Color", rColour);
             CurrentRoom.GetComponent<Renderer>().material.SetColor("_FirstOutlineColor", rColourO);
+
             CurrentRoom.AddComponent<EG_room>();
             CurrentRoom.GetComponent<EG_room>().Name = rType;
             CurrentRoom.GetComponent<EG_room>().Area = rArea;
             CurrentRoom.GetComponent<EG_room>().MinArea = minSize;
-            CurrentRoom.GetComponent<EG_room>().Vertices = listvecs;
+            CurrentRoom.GetComponent<EG_room>().Vertices = vertices;
+            CurrentRoom.GetComponent<EG_room>().Triangles = triangles;
 
             CurrentRoom.transform.SetParent(parentRoom.transform);
 
