@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using OM;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -32,11 +33,11 @@ public class LayerInitializer : MonoBehaviour
             var height = 0.0f;
             if (i < tileArray.Count -1)
             {
-                height = tileArray[i + 1]["elevation"].ToObject<float>() - tileArray[i]["elevation"].ToObject<float>();
+                height = Math.Abs(tileArray[i + 1]["elevation"].ToObject<float>() - tileArray[i]["elevation"].ToObject<float>());
             }
             else
             {
-                height = tileArray[i]["elevation"].ToObject<float>() * 2;
+                height = Math.Abs(tileArray[i]["elevation"].ToObject<float>() - tileArray[i-1]["elevation"].ToObject<float>());
             }
 
             OM_level level = new OM_level

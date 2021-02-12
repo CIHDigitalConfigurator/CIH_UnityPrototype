@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OM;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ public class VisibilityController : MonoBehaviour
 {
     public GameObject jsonReader;
     List<GameObject> parents;
-    List<OM.OM_level> levels;
+    public List<OM_level> levels;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,12 @@ public class VisibilityController : MonoBehaviour
         // Find all levels
         levels = jsonReader.GetComponent<LayerInitializer>().levels;
 
+    }
+
+    public OM_level FindClosestLevel(float number)
+    {
+        OM_level closest = levels.OrderBy(item => Math.Abs(number - item.Elevation)).First();
+        return closest;
     }
 
     List<GameObject> FindParents(string[] parentNames)

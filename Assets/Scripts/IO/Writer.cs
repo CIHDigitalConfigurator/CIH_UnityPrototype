@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class Writer : MonoBehaviour
@@ -15,45 +16,33 @@ public class Writer : MonoBehaviour
     public void WriteJson()
     {
         homePath = Environment.GetEnvironmentVariable("HOMEPATH");
+        GameObject[] allRooms = GameObject.FindGameObjectsWithTag("room");
 
-        var allRooms = GameObject.FindGameObjectsWithTag("room");
-
-        List<EG_room> egrooms = new List<EG_room>();
-        List<Dictionary<string, object>> all = new List<Dictionary<string, object>>();
+        List<Dictionary<string, object>> roomData = new List<Dictionary<string, object>>();
 
         for (int i = 0; i < allRooms.Length; i++)
         {
 
-            var eg_rooms = allRooms[i].GetComponent<EG_room>();
-            Dictionary<string, object> properties = new Dictionary<string, object>();
-            properties.Add("name", eg_rooms.name);
-            properties.Add("area", eg_rooms.Area);
+            EG_room eg_room = allRooms[i].GetComponent<EG_room>();
+            
+            // convert Vector2 to arrays
+            double[][] roomsVertices = eg_room.Vertices.Select(v => new double[2] { Math.Round(v.x, 2), Math.Round(v.y, 2) }).ToArray();
 
-
-            List<float[]> verts = new List<float[]>();
-
-            for (int j = 0; j < eg_rooms.Vertices.Count; j++)
+            Dictionary<string, object> roomProperties = new Dictionary<string, object>()
             {
-                float[] vertices = new float[3];
-                vertices[0] = eg_rooms.Vertices[j].x;
-                vertices[0] = eg_rooms.Vertices[j].z;
-                vertices[0] = eg_rooms.Vertices[j].y;
+                { "name", eg_room.Name },
+                { "type", eg_room.Type },
+                { "vertices", roomsVertices },
+                { "height", eg_room.Height },
+                { "level", eg_room.Level }
+            };
 
-                verts.Add(vertices);
-            }
+            roomData.Add(roomProperties);
 
-            properties.Add("vertices", verts.ToArray());
-            properties.Add("triangles", eg_rooms.Triangles);
-
-            all.Add(properties);
-
-            egrooms.Add(allRooms[i].GetComponent<EG_room>());
         }
 
-        string aa = JsonConvert.SerializeObject(all.ToArray());
-        
-
-        System.IO.File.WriteAllText(homePath + relativeJsonpath + "out_Rooms.json", aa);
+        string serializedRoomData = JsonConvert.SerializeObject(roomData.ToArray());
+        System.IO.File.WriteAllText(homePath + relativeJsonpath + "out_Rooms.json", serializedRoomData);
 
     }
 }

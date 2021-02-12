@@ -5,10 +5,11 @@ using UnityEngine;
 public class EG_room : MonoBehaviour
 {
     public string Name { get; set; }
-    public float MinArea { get; set; }
+    
+    public string Type { get; set; }
     public float Area { get; set; }
     public float Height { get; set; }
-    public List<Vector3> Vertices { get; set; }
-    public List<int> Triangles { get; set; }
+    public List<Vector2> Vertices { get; set; }
+    public float Level { get; set; }
 
 }

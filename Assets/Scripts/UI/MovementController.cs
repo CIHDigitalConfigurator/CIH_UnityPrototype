@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OM;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -185,9 +186,13 @@ public class MovementController : MonoBehaviour
         float rArea = CalculateSurfaceArea(tempRoom.GetComponent<MeshFilter>().sharedMesh);
         currentArea = rArea;
 
+        // find closest level and its height
+        var height = tempRoom.GetComponent<MeshFilter>().sharedMesh.bounds.center.y;
+        Tuple<float, float> levelParams = FindAssociatedHeightAndLevel(height);
 
+        // convert vertices to 2d
         var vertices = tempRoom.GetComponent<MeshFilter>().sharedMesh.vertices.ToList();
-        var triangles = tempRoom.GetComponent<MeshFilter>().sharedMesh.triangles.ToList();
+        var vertices2D = vertices.Select(vertice => new Vector2(vertice.x, vertice.z)).ToList();
 
 
         if (rArea >= minSize)
@@ -199,12 +204,13 @@ public class MovementController : MonoBehaviour
             CurrentRoom.GetComponent<Renderer>().material.SetColor("_Color", rColour);
             CurrentRoom.GetComponent<Renderer>().material.SetColor("_FirstOutlineColor", rColourO);
 
+
             CurrentRoom.AddComponent<EG_room>();
-            CurrentRoom.GetComponent<EG_room>().Name = rType;
+            CurrentRoom.GetComponent<EG_room>().Type = rType;
             CurrentRoom.GetComponent<EG_room>().Area = rArea;
-            CurrentRoom.GetComponent<EG_room>().MinArea = minSize;
-            CurrentRoom.GetComponent<EG_room>().Vertices = vertices;
-            CurrentRoom.GetComponent<EG_room>().Triangles = triangles;
+            CurrentRoom.GetComponent<EG_room>().Vertices = vertices2D;
+            CurrentRoom.GetComponent<EG_room>().Level = levelParams.Item1;
+            CurrentRoom.GetComponent<EG_room>().Height = levelParams.Item2;
 
             CurrentRoom.transform.SetParent(parentRoom.transform);
 
@@ -222,6 +228,12 @@ public class MovementController : MonoBehaviour
         }
 
         Deselect();
+    }
+
+    Tuple<float, float> FindAssociatedHeightAndLevel(float meshHeight)
+    {
+        OM_level closestLevel = gameObject.GetComponentInParent<VisibilityController>().FindClosestLevel(meshHeight);
+        return Tuple.Create(closestLevel.Elevation, closestLevel.Height);
     }
 
     /// <summary>
@@ -243,7 +255,9 @@ public class MovementController : MonoBehaviour
         nameText.GetComponent<TextMesh>().anchor = TextAnchor.UpperCenter;
         nameText.GetComponent<TextMesh>().characterSize = 0.1f;
         nameText.GetComponent<TextMesh>().fontSize = 100;
-        
+        CurrentRoom.GetComponent<EG_room>().Name = rname;
+
+
         nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
     }
 
