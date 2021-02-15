@@ -27,7 +27,7 @@ public class MovementController : MonoBehaviour
     public GameObject CurrentRoom { get; set; }
     public GameObject CurrentObject { get; set; }
     public List<GameObject> selectedObjects;
-    
+
     public Material matTemplate;
 
     public Material site;
@@ -41,7 +41,7 @@ public class MovementController : MonoBehaviour
     #endregion
 
     #region Private Variables
-    
+
     private EffectsManager effectsManager;
     private RaycastController raycastController;
     private UIController UIController;
@@ -54,8 +54,10 @@ public class MovementController : MonoBehaviour
         raycastController = gameObject.GetComponent<RaycastController>();
         UIController = gameObject.GetComponent<UIController>();
 
-        parentRoom = new GameObject();
-        parentRoom.name = "ROOM";
+        parentRoom = new GameObject
+        {
+            name = "ROOM"
+        };
     }
 
 
@@ -74,13 +76,13 @@ public class MovementController : MonoBehaviour
             if (tempObject != null)
             {
                 CurrentObject = tempObject;
-                MovBlocked  = false;
+                MovBlocked = false;
                 //effectsManager.ChangeCurrentObject(currentObject);
                 if (!selectedObjects.Contains(tempObject))
                 {
                     selectedObjects.Add(tempObject);
                 }
-                else 
+                else
                 {
                     selectedObjects.Remove(tempObject);
                 }
@@ -96,7 +98,7 @@ public class MovementController : MonoBehaviour
 
         fCounter++;
 
-        if (fCounter > 1000) 
+        if (fCounter > 1000)
         {
             FindChildren("BH_grid_tiles", "tile");
 
@@ -123,7 +125,7 @@ public class MovementController : MonoBehaviour
     ///<remarks>
     ///Used to deselect the tiles and turn the rendering back to normal - also accesible via the UI button
     ///</remarks>
-    public void Deselect() 
+    public void Deselect()
     {
         MovBlocked = true;
         CurrentObject = null;
@@ -133,15 +135,15 @@ public class MovementController : MonoBehaviour
 
 
 
-    private void FindChildren(string parent, string tg) 
+    private void FindChildren(string parent, string tg)
     {
         GameObject rt = GameObject.Find(parent);
-        if (rt != null) 
+        if (rt != null)
         {
-            foreach (Transform child in rt.GetComponent<Transform>()) 
+            foreach (Transform child in rt.GetComponent<Transform>())
             {
                 child.tag = tg;
-                if (child.gameObject.GetComponent<MeshCollider>()==null) child.gameObject.AddComponent<MeshCollider>();
+                if (child.gameObject.GetComponent<MeshCollider>() == null) child.gameObject.AddComponent<MeshCollider>();
                 //if( child.GetComponent<Renderer>().material != tile) child.GetComponent<Renderer>().material = tile;
 
             }
@@ -150,10 +152,10 @@ public class MovementController : MonoBehaviour
     /// <summary>
     ///  creating a combined mesh for a room layout 
     /// </summary>
-    private GameObject MergeMesh() 
+    private GameObject MergeMesh()
     {
         GameObject room = new GameObject();
-        
+
         MeshFilter[] meshFilters = new MeshFilter[selectedObjects.Count];
         CombineInstance[] combine = new CombineInstance[meshFilters.Length];
 
@@ -177,7 +179,7 @@ public class MovementController : MonoBehaviour
 
 
     #endregion
-    
+
 
     /// <param name="rType"> room type comes with a set of parameters defining creation criteria; currently embedded in a json </param>
     public void CreateRoom(string rType, float minSize, Color rColour, Color rColourO)
@@ -192,8 +194,8 @@ public class MovementController : MonoBehaviour
 
         // convert vertices to 2d
         var vertices = tempRoom.GetComponent<MeshFilter>().sharedMesh.vertices.ToList();
-        var vertices2D = vertices.Select(vertice => new Vector2(vertice.x, vertice.z)).ToList();
-
+        // var vertices2D = vertices.Select(vertice => new Vector2(vertice.x, vertice.z)).ToList();
+        var vertices2D = Outline2DArray(tempRoom.GetComponent<MeshFilter>().sharedMesh);
 
         if (rArea >= minSize)
         {
@@ -223,7 +225,7 @@ public class MovementController : MonoBehaviour
             {
                 obj.SetActive(true);
             }
-            
+
 
         }
 
@@ -240,7 +242,7 @@ public class MovementController : MonoBehaviour
     /// adding the  name as text to the displayed room mesh
     /// this is where we would also initialise serialisation (to pass to the next configurator)
     /// </summary>
-    public void NameRoom() 
+    public void NameRoom()
     {
         var tiles = GameObject.FindGameObjectsWithTag("tile");
 
@@ -285,6 +287,23 @@ public class MovementController : MonoBehaviour
 
         return (float)(sum / 2.0);
     }
+    ///<summary>
+    ///Finding the outline of a 2D mesh
+    ///</summary>
+    private static List<Vector2> Outline2DArray(Mesh mesh) 
+    {
+        List<Vector2> vr = new List<Vector2>();
+        var boundaryPath = EdgeHelper.GetEdges(mesh.triangles).FindBoundary().SortEdges();
+        Vector3[] vertices = mesh.vertices;
+        for (int i = 0; i < boundaryPath.Count; i++)
+        {
+            Vector3 pos = vertices[boundaryPath[i].v1];
+            vr.Add(new Vector2(pos.x, pos.z));
+        }
+
+        return vr;
+    }
+
 
 
     /*

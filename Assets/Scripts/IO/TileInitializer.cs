@@ -13,7 +13,6 @@ public class TileInitializer : MonoBehaviour
     #endregion
 
     #region Private Variables
-    JObject json;
     GameObject parentTile;
     List<GameObject> childrenTiles;
     #endregion
@@ -50,7 +49,7 @@ public class TileInitializer : MonoBehaviour
     GameObject InstatiateTile(JToken parameters, GameObject parent, Material m)
     {
         // create new object
-        GameObject tile = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        GameObject tile = GameObject.CreatePrimitive(PrimitiveType.Quad);
         tile.transform.SetParent(parent.transform, false);
 
         tile.GetComponent<MeshRenderer>().material = m;

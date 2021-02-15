@@ -19,8 +19,10 @@ public class EG_tile : MonoBehaviour
         this.name = "tile";
         tag = "tile";
         transform.position = om_tile.CentrePoint.Value;
-        transform.localScale = new Vector3(om_tile.Width.Value, 0.1f, om_tile.Depth.Value);
-        transform.Rotate(0, om_tile.Rotation.Value, 0);
+        transform.localScale = new Vector3(om_tile.Width.Value,  om_tile.Depth.Value, 1f);
+        transform.Rotate(90f, om_tile.Rotation.Value, 0);
+
+        // add prop for display purposes if needed (renderers would need to connect.. tbi)
 
     }
 
