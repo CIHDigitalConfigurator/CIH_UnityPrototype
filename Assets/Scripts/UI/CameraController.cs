@@ -9,6 +9,8 @@ public class CameraController : MonoBehaviour
     public float SensitivityRotation = 2f;
     public float SensitivityPosition = 2f;
     public float SensitivityScroll = 2f;
+
+    
     #endregion
     #region Private Variables
     //private float maxVertAngle = 80f;
@@ -28,6 +30,8 @@ public class CameraController : MonoBehaviour
         fov = Camera.main.fieldOfView;
 
         prevWheel = Input.GetAxis("Mouse ScrollWheel");
+
+        
     }
     
     void Update()
@@ -60,4 +64,5 @@ public class CameraController : MonoBehaviour
         }
 
     }
+
 }

@@ -1,5 +1,8 @@
-﻿using System.Collections;
+﻿using OM;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -31,6 +34,10 @@ public class MovementController : MonoBehaviour
 
     public Text inputText;
 
+    public float currentArea;
+
+    GameObject parentRoom;
+
     #endregion
 
     #region Private Variables
@@ -47,6 +54,8 @@ public class MovementController : MonoBehaviour
         raycastController = gameObject.GetComponent<RaycastController>();
         UIController = gameObject.GetComponent<UIController>();
 
+        parentRoom = new GameObject();
+        parentRoom.name = "ROOM";
     }
 
 
@@ -122,6 +131,8 @@ public class MovementController : MonoBehaviour
         effectsManager.UpdateEmission(selectedObjects);
     }
 
+
+
     private void FindChildren(string parent, string tg) 
     {
         GameObject rt = GameObject.Find(parent);
@@ -173,14 +184,36 @@ public class MovementController : MonoBehaviour
     {
         GameObject tempRoom = MergeMesh();
         float rArea = CalculateSurfaceArea(tempRoom.GetComponent<MeshFilter>().sharedMesh);
+        currentArea = rArea;
+
+        // find closest level and its height
+        var height = tempRoom.GetComponent<MeshFilter>().sharedMesh.bounds.center.y;
+        Tuple<float, float> levelParams = FindAssociatedHeightAndLevel(height);
+
+        // convert vertices to 2d
+        var vertices = tempRoom.GetComponent<MeshFilter>().sharedMesh.vertices.ToList();
+        var vertices2D = vertices.Select(vertice => new Vector2(vertice.x, vertice.z)).ToList();
+
 
         if (rArea >= minSize)
         {
             CurrentRoom = tempRoom;
+            CurrentRoom.tag = "room";
             CurrentRoom.AddComponent<MeshRenderer>();
             CurrentRoom.GetComponent<Renderer>().material = matTemplate;
             CurrentRoom.GetComponent<Renderer>().material.SetColor("_Color", rColour);
             CurrentRoom.GetComponent<Renderer>().material.SetColor("_FirstOutlineColor", rColourO);
+
+
+            CurrentRoom.AddComponent<EG_room>();
+            CurrentRoom.GetComponent<EG_room>().Type = rType;
+            CurrentRoom.GetComponent<EG_room>().Area = rArea;
+            CurrentRoom.GetComponent<EG_room>().Vertices = vertices2D;
+            CurrentRoom.GetComponent<EG_room>().Level = levelParams.Item1;
+            CurrentRoom.GetComponent<EG_room>().Height = levelParams.Item2;
+
+            CurrentRoom.transform.SetParent(parentRoom.transform);
+
             UIController.EnableInputField();
 
         } else
@@ -197,23 +230,38 @@ public class MovementController : MonoBehaviour
         Deselect();
     }
 
+    Tuple<float, float> FindAssociatedHeightAndLevel(float meshHeight)
+    {
+        OM_level closestLevel = gameObject.GetComponentInParent<VisibilityController>().FindClosestLevel(meshHeight);
+        return Tuple.Create(closestLevel.Elevation, closestLevel.Height);
+    }
+
     /// <summary>
     /// adding the  name as text to the displayed room mesh
     /// this is where we would also initialise serialisation (to pass to the next configurator)
     /// </summary>
     public void NameRoom() 
     {
+        var tiles = GameObject.FindGameObjectsWithTag("tile");
+
         string rname = inputText.text;
         CurrentRoom.name = rname;
         GameObject nameText = new GameObject();
         nameText.AddComponent<TextMesh>();
-        nameText.GetComponent<TextMesh>().text = rname;
+        nameText.GetComponent<TextMesh>().text = rname + "\n " + (Math.Round(currentArea)).ToString() + " m²";
         nameText.transform.position = CurrentRoom.GetComponent<Renderer>().bounds.center;
         nameText.transform.parent = CurrentRoom.transform;
         nameText.GetComponent<TextMesh>().alignment = TextAlignment.Center;
         nameText.GetComponent<TextMesh>().anchor = TextAnchor.UpperCenter;
+        nameText.GetComponent<TextMesh>().characterSize = 0.1f;
+        nameText.GetComponent<TextMesh>().fontSize = 100;
+        CurrentRoom.GetComponent<EG_room>().Name = rname;
+
+
         nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
     }
+
+
 
     ///<summary>
     ///For area check

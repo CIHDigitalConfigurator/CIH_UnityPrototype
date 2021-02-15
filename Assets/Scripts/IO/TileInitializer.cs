@@ -35,7 +35,7 @@ public class TileInitializer : MonoBehaviour
         // create parent gameobject
         parentTile = new GameObject
         {
-            name = "tiles"
+            name = "TILE"
         };
 
         // Build game object based on information stored in json
@@ -52,23 +52,35 @@ public class TileInitializer : MonoBehaviour
         // create new object
         GameObject tile = GameObject.CreatePrimitive(PrimitiveType.Cube);
         tile.transform.SetParent(parent.transform, false);
+
         tile.GetComponent<MeshRenderer>().material = m;
         tile.layer = LayerMask.NameToLayer("Level " + parameters["level"].ToObject<string>());
+
+        // child just for preview
+        //GameObject childMesh = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        //childMesh.name = "preview mesh";
+        //childMesh.transform.SetParent(tile.transform);
+
 
         // attach eg object
         var eg_tile = tile.AddComponent<EG_tile>();
 
-        // assign parameters
-        eg_tile.om_tile.CentrePoint = new Vector3
+        Vector3 centrePoint = new Vector3
                 (parameters["centre_point"]["x"].ToObject<float>(),
                  parameters["centre_point"]["z"].ToObject<float>(),
                  parameters["centre_point"]["y"].ToObject<float>()
     );
+
+        // assign parameters
+        eg_tile.om_tile.CentrePoint = centrePoint;
         eg_tile.om_tile.Width = parameters["width"].ToObject<float>();
         eg_tile.om_tile.Depth = parameters["depth"].ToObject<float>();
-        eg_tile.om_tile.Height = 0.1f;//parameters["height"].ToObject<float>();
+        eg_tile.om_tile.Height = parameters["height"].ToObject<float>();
         eg_tile.om_tile.Rotation = -parameters["rotation"].ToObject<float>();
         eg_tile.om_tile.Level = parameters["level"].ToObject<int>();
+
+        //childMesh.GetComponent<MeshRenderer>().material = m;
+
 
         return tile;
     }

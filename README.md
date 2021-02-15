@@ -59,12 +59,12 @@ Currently using version 2020.1.15f1
    - PHASE II: other inputs (doors/ openings definitions etc) (...)
    - ID (string/ ID)
 3. 'Room' OUT:
-   - name (string)
-   - type (enum)
-   - vertices (List\<Vector3>)
+   - **name (string)**
+   - **type (enum)**
+   - **vertices (List\<Vector2>)**
    - edges - internal/ external (List<(int,int,bool)>)
-   - height (float)
-   - level (float)
+   - **height (float)**
+   - **level (float)**
    - adjacencies (List<string/ID>)
    - form factor (float)
    - warning log (List\<string> or dict)
