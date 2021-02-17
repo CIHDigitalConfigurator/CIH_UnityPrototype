@@ -89,6 +89,8 @@ public class UIController : MonoBehaviour
     {
         GameObject panel = Instantiate(panelPrefab);
         panel.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
+
+        // print message from validation class
     }
 
     private void SpawnCameraButton()
@@ -157,7 +159,7 @@ public class UIController : MonoBehaviour
 
     }
 
-    //private void CallTurnOffLayer
+
 
     private void InstantiateButton(string rName,  float posX, float posY, float minSize, Color rColour, Color rColourO)
     {
@@ -194,19 +196,21 @@ public class UIController : MonoBehaviour
 
     }
 
-    public IEnumerator DisplayWarning(float duration, string rType, float minSize) 
+    public IEnumerator DisplayWarning(float duration) 
     {
         // enable background image
         mainCanvas.GetComponent<Image>().enabled = true;
 
         // enable warning screen
-        errorScreen.GetComponentInChildren<Text>().text = "The area of the room you are trying to create is lower than the minimum allowed for the "+rType+" type: "+minSize.ToString()+"m2";
+        errorScreen.GetComponentInChildren<Text>().text = "Room can be created only from tiles that have at least one common edge.";
         errorScreen.SetActive(true);
         yield return new WaitForSeconds(duration);
         errorScreen.SetActive(false);
         mainCanvas.GetComponent<Image>().enabled = false;
 
     }
+
+
     
     ///<remarks>
     ///NW

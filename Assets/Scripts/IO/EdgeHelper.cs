@@ -74,4 +74,5 @@ public static class EdgeHelper
         }
         return result;
     }
+
 }

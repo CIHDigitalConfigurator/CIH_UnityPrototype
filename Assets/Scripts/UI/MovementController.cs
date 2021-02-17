@@ -45,6 +45,7 @@ public class MovementController : MonoBehaviour
     private EffectsManager effectsManager;
     private RaycastController raycastController;
     private UIController UIController;
+    private Validation validation;
     private int fCounter;
     #endregion
 
@@ -53,6 +54,7 @@ public class MovementController : MonoBehaviour
         effectsManager = gameObject.GetComponent<EffectsManager>();
         raycastController = gameObject.GetComponent<RaycastController>();
         UIController = gameObject.GetComponent<UIController>();
+        validation = gameObject.GetComponent<Validation>();
 
         parentRoom = new GameObject
         {
@@ -181,24 +183,27 @@ public class MovementController : MonoBehaviour
     #endregion
 
 
+
     /// <param name="rType"> room type comes with a set of parameters defining creation criteria; currently embedded in a json </param>
     public void CreateRoom(string rType, float minSize, Color rColour, Color rColourO)
     {
-        GameObject tempRoom = MergeMesh();
-        float rArea = CalculateSurfaceArea(tempRoom.GetComponent<MeshFilter>().sharedMesh);
-        currentArea = rArea;
+        bool adjacenciesCorrect = AllMeshesHasCommonEdges(selectedObjects);
 
-        // find closest level and its height
-        var height = tempRoom.GetComponent<MeshFilter>().sharedMesh.bounds.center.y;
-        Tuple<float, float> levelParams = FindAssociatedHeightAndLevel(height);
-
-        // convert vertices to 2d
-        var vertices = tempRoom.GetComponent<MeshFilter>().sharedMesh.vertices.ToList();
-        // var vertices2D = vertices.Select(vertice => new Vector2(vertice.x, vertice.z)).ToList();
-        var vertices2D = Outline2DArray(tempRoom.GetComponent<MeshFilter>().sharedMesh);
-
-        if (rArea >= minSize)
+        if (adjacenciesCorrect)
         {
+            GameObject tempRoom = MergeMesh();
+            float rArea = CalculateSurfaceArea(tempRoom.GetComponent<MeshFilter>().sharedMesh);
+            currentArea = rArea;
+
+            // find closest level and its height
+            var height = tempRoom.GetComponent<MeshFilter>().sharedMesh.bounds.center.y;
+            Tuple<float, float> levelParams = FindAssociatedHeightAndLevel(height);
+
+            var vertices2D = Outline2DArray(tempRoom.GetComponent<MeshFilter>().sharedMesh);
+
+            validation.AddTextToValidation(rType, "name", minSize, rArea);
+
+            // create room
             CurrentRoom = tempRoom;
             CurrentRoom.tag = "room";
             CurrentRoom.AddComponent<MeshRenderer>();
@@ -217,16 +222,14 @@ public class MovementController : MonoBehaviour
             CurrentRoom.transform.SetParent(parentRoom.transform);
 
             UIController.EnableInputField();
-
-        } else
+        }
+        else
         {
-            StartCoroutine(UIController.DisplayWarning(5f, rType, minSize));
+            StartCoroutine(UIController.DisplayWarning(3f));
             foreach (GameObject obj in selectedObjects)
             {
                 obj.SetActive(true);
             }
-
-
         }
 
         Deselect();
@@ -290,7 +293,7 @@ public class MovementController : MonoBehaviour
     ///<summary>
     ///Finding the outline of a 2D mesh
     ///</summary>
-    private static List<Vector2> Outline2DArray(Mesh mesh) 
+    private static List<Vector2> Outline2DArray(Mesh mesh)
     {
         List<Vector2> vr = new List<Vector2>();
         var boundaryPath = EdgeHelper.GetEdges(mesh.triangles).FindBoundary().SortEdges();
@@ -302,6 +305,63 @@ public class MovementController : MonoBehaviour
         }
 
         return vr;
+    }
+
+
+    public static bool AllMeshesHasCommonEdges(List<GameObject> objects)
+    {
+        bool pass = true;
+
+        List<bool> commonEdges = new List<bool>(objects.Count);
+
+        for (int i = 0; i < objects.Count; i++)
+        {
+            bool commonEdgeForThisMesh = false;
+
+            for (int j = 0; j < objects.Count; j++)
+            {
+                if (i != j)
+                {
+                    bool commonEdge = MeshesHaveCommondge(objects[i], objects[j]);
+                    if (commonEdge == true)
+                    {
+                        commonEdgeForThisMesh = true;
+                    }
+                }
+            }
+            commonEdges.Add(commonEdgeForThisMesh);
+        }
+
+        pass = !(commonEdges.Contains(false));
+
+        return pass;
+    }
+
+    private static bool MeshesHaveCommondge(GameObject a, GameObject b)
+    {
+        int commonVertices = 0;
+
+        Vector3[] verticesA = a.GetComponent<MeshFilter>().mesh.vertices;
+        Vector3[] verticesB = b.GetComponent<MeshFilter>().mesh.vertices;
+
+        Vector3[] aworld = verticesA.Select(vertice => a.transform.TransformPoint(vertice)).ToArray();
+        Vector3[] bworld = verticesB.Select(vertice => b.transform.TransformPoint(vertice)).ToArray();
+
+
+        for (int i = 0; i < aworld.Length; i++)
+        {
+            for (int j = 0; j < bworld.Length; j++)
+            {
+                if (Math.Round(aworld[i].x, 2) == Math.Round(bworld[j].x, 2)
+                    && Math.Round(aworld[i].y, 2) == Math.Round(bworld[j].y, 2)
+                    && Math.Round(aworld[i].z, 2) == Math.Round(bworld[j].z, 2))
+                {
+                    commonVertices++;
+                }
+            }
+        }
+
+        return commonVertices > 1;
     }
 
 
