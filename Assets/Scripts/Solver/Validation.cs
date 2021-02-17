@@ -34,4 +34,9 @@ public class Validation : MonoBehaviour
 
         validationMessage = validationMessage + "\n\n" + message;
     }
+
+    public void PrintMessagesOnScrollPanel(GameObject scrollPanel)
+    {
+
+    }
 }

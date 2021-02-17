@@ -433,7 +433,7 @@ PrefabInstance:
     - target: {fileID: 3937864570721921211, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3937864570721921211, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
@@ -1828,7 +1828,7 @@ PrefabInstance:
     - target: {fileID: 3937864570721921211, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3937864570721921211, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
@@ -2015,8 +2015,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1663563109}
   - {fileID: 169424607}
+  - {fileID: 1663563109}
   - {fileID: 1978202728}
   - {fileID: 1859220105}
   - {fileID: 169727831}
@@ -2456,7 +2456,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a33368e39ccd18849b0204f6a6847f2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  validationMessage: asdf
+  validationMessage: 
 --- !u!114 &2097682566 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6235146385714688424, guid: 2f88faa420128e345a5b17f255b859e4,
@@ -2527,7 +2527,7 @@ PrefabInstance:
         type: 3}
       propertyPath: panelPrefab
       value: 
-      objectReference: {fileID: 4893307336880655321, guid: 93321a07531f414429384bd816feb807,
+      objectReference: {fileID: 3238399191010543509, guid: c8a076f4e9ee16e4dba37e884c2d8d26,
         type: 3}
     - target: {fileID: 6235146385714688420, guid: 2f88faa420128e345a5b17f255b859e4,
         type: 3}
