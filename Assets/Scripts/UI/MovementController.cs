@@ -332,7 +332,7 @@ public class MovementController : MonoBehaviour
             commonEdges.Add(commonEdgeForThisMesh);
         }
 
-        pass = !(commonEdges.Contains(false));
+        pass = !commonEdges.Contains(false);
 
         return pass;
     }
