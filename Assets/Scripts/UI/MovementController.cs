@@ -1,10 +1,8 @@
 ﻿using OM;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -122,70 +120,10 @@ public class MovementController : MonoBehaviour
     }
 
 
-    #region Utilities
-
-    ///<remarks>
-    ///Used to deselect the tiles and turn the rendering back to normal - also accesible via the UI button
-    ///</remarks>
-    public void Deselect()
-    {
-        MovBlocked = true;
-        CurrentObject = null;
-        selectedObjects.Clear();
-        effectsManager.UpdateEmission(selectedObjects);
-    }
-
-
-
-    private void FindChildren(string parent, string tg)
-    {
-        GameObject rt = GameObject.Find(parent);
-        if (rt != null)
-        {
-            foreach (Transform child in rt.GetComponent<Transform>())
-            {
-                child.tag = tg;
-                if (child.gameObject.GetComponent<MeshCollider>() == null) child.gameObject.AddComponent<MeshCollider>();
-                //if( child.GetComponent<Renderer>().material != tile) child.GetComponent<Renderer>().material = tile;
-
-            }
-        }
-    }
-    /// <summary>
-    ///  creating a combined mesh for a room layout 
-    /// </summary>
-    private GameObject MergeMesh()
-    {
-        GameObject room = new GameObject();
-
-        MeshFilter[] meshFilters = new MeshFilter[selectedObjects.Count];
-        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
-
-        int i = 0;
-        while (i < meshFilters.Length)
-        {
-            meshFilters[i] = selectedObjects[i].GetComponent<MeshFilter>();
-            selectedObjects[i].SetActive(false);
-            combine[i].mesh = meshFilters[i].sharedMesh;
-            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
-            meshFilters[i].gameObject.SetActive(false);
-
-            i++;
-        }
-        room.AddComponent<MeshFilter>();
-        room.GetComponent<MeshFilter>().mesh = new Mesh();
-        room.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
-        room.transform.gameObject.SetActive(true);
-        return room;
-    }
-
-
-    #endregion
-
-
+    #region Functions triggered by runtime events
 
     /// <param name="rType"> room type comes with a set of parameters defining creation criteria; currently embedded in a json </param>
-    public void CreateRoom(string rType, float minSize, Color rColour, Color rColourO)
+    public void CreateRoom(string rType, float minSize, Color rColour, Color rColourO, bool circ)
     {
         bool adjacenciesCorrect = AllMeshesHasCommonEdges(selectedObjects);
 
@@ -199,7 +137,7 @@ public class MovementController : MonoBehaviour
             var height = tempRoom.GetComponent<MeshFilter>().sharedMesh.bounds.center.y;
             Tuple<float, float> levelParams = FindAssociatedHeightAndLevel(height);
 
-            var vertices2D = Outline2DArray(tempRoom.GetComponent<MeshFilter>().sharedMesh);
+            var vertices2D = Outline2DArray(tempRoom.GetComponent<MeshFilter>().mesh);
 
             validation.AddTextToValidation(rType, "name", minSize, rArea);
 
@@ -218,6 +156,9 @@ public class MovementController : MonoBehaviour
             CurrentRoom.GetComponent<EG_room>().Vertices = vertices2D;
             CurrentRoom.GetComponent<EG_room>().Level = levelParams.Item1;
             CurrentRoom.GetComponent<EG_room>().Height = levelParams.Item2;
+            CurrentRoom.GetComponent<EG_room>().Edges = new List<bool>();
+            CurrentRoom.GetComponent<EG_room>().Circulation = circ;
+
 
             CurrentRoom.transform.SetParent(parentRoom.transform);
 
@@ -235,11 +176,6 @@ public class MovementController : MonoBehaviour
         Deselect();
     }
 
-    Tuple<float, float> FindAssociatedHeightAndLevel(float meshHeight)
-    {
-        OM_level closestLevel = gameObject.GetComponentInParent<VisibilityController>().FindClosestLevel(meshHeight);
-        return Tuple.Create(closestLevel.Elevation, closestLevel.Height);
-    }
 
     /// <summary>
     /// adding the  name as text to the displayed room mesh
@@ -266,11 +202,163 @@ public class MovementController : MonoBehaviour
         nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
     }
 
+    public static bool AllMeshesHasCommonEdges(List<GameObject> objects)
+    {
+        bool pass = true;
 
+        List<bool> commonEdges = new List<bool>(objects.Count);
+
+        for (int i = 0; i < objects.Count; i++)
+        {
+            bool commonEdgeForThisMesh = false;
+
+            for (int j = 0; j < objects.Count; j++)
+            {
+                if (i != j)
+                {
+                    bool commonEdge = EdgeHelper.MeshesHaveCommondge(objects[i], objects[j]);
+                    if (commonEdge == true)
+                    {
+                        commonEdgeForThisMesh = true;
+                    }
+                }
+            }
+            commonEdges.Add(commonEdgeForThisMesh);
+        }
+
+        pass = !commonEdges.Contains(false);
+
+        return pass;
+    }
+
+    ///<remarks>
+    ///Used to deselect the tiles and turn the rendering back to normal - also accesible via the UI button
+    ///</remarks>
+    public void Deselect()
+    {
+        MovBlocked = true;
+        CurrentObject = null;
+        selectedObjects.Clear();
+        effectsManager.UpdateEmission(selectedObjects);
+    }
+
+    public void EdgeTypesWriter() 
+    {
+        EdgeTypes();
+    }
+    #endregion
+
+    #region Output utilities
+    ///<summary>
+    ///Finding the outline of a 2D mesh
+    ///</summary>
+    private static List<Vector2> Outline2DArray(Mesh mesh)
+    {
+        List<Vector2> vr = new List<Vector2>();
+        var boundaryPath = EdgeHelper.GetEdges(mesh.triangles, mesh.vertices).FindBoundary().SortEdges();
+        //Debug.Log("boundary path count " +boundaryPath.Count());
+        Vector3[] vertices = mesh.vertices;
+        for (int i = 0; i < boundaryPath.Count; i++)
+        {
+            Vector3 pos = vertices[boundaryPath[i].v1];
+            vr.Add(new Vector2(pos.x, pos.z));
+            //Debug.Log(vertices[boundaryPath[i].v1]);
+        }
+        //Debug.Log("vector2d count " + vr.Count());
+        return vr;
+    }
+
+    Tuple<float, float> FindAssociatedHeightAndLevel(float meshHeight)
+    {
+        OM_level closestLevel = gameObject.GetComponentInParent<VisibilityController>().FindClosestLevel(meshHeight);
+        return Tuple.Create(closestLevel.Elevation, closestLevel.Height);
+    }
+
+    /// <summary>
+    /// Assign the edge types to the rooms
+    /// </summary>
+    private static void EdgeTypes()
+    {
+        GameObject[] rooms = GameObject.FindGameObjectsWithTag("room");
+
+        // external edge -> True
+
+        for (int i = 0; i < rooms.Length; i++)
+        {
+            List<bool> edgeTypes_i = new List<bool>();
+            Mesh mesh_i = rooms[i].GetComponent<MeshFilter>().mesh;
+            var boundaryPath_i = EdgeHelper.GetEdges(mesh_i.triangles, mesh_i.vertices).FindBoundary().SortEdges();
+            Vector3[] vertices_i = mesh_i.vertices;
+            foreach (var edge_i in boundaryPath_i)
+            {
+                bool intrnl = false;
+                for (int j = 0; j < rooms.Length; j++)
+                {
+                    if (j != i)
+                    {
+                        Mesh mesh_j = rooms[j].GetComponent<MeshFilter>().mesh;
+                        var boundaryPath_j = EdgeHelper.GetEdges(mesh_j.triangles, mesh_j.vertices).FindBoundary().SortEdges();
+                        Vector3[] vertices_j = mesh_j.vertices;
+                        foreach (var edge_j in boundaryPath_j)
+                        {
+                          
+                            if (edge_i.v1x == edge_j.v1x && edge_i.v1z == edge_j.v1z && edge_i.v2x == edge_j.v2x && edge_i.v2z == edge_j.v2z|| (edge_i.v1x == edge_j.v2x && edge_i.v1z == edge_j.v2z && edge_i.v2x == edge_j.v1x && edge_i.v2z == edge_j.v1z))
+                            {
+                                intrnl = true;
+                                Debug.Log(edge_i.v1x + " " + edge_j.v1x + " " +i +" " +j);
+                                break;
+                            }
+                        }
+                    }
+                }
+                Debug.Log("intrnl " + intrnl);
+                edgeTypes_i.Add(!intrnl);
+            }
+
+            rooms[i].GetComponent<EG_room>().Edges = edgeTypes_i;
+
+        }
+
+    }
+
+    #endregion
+
+
+    #region Utilities
+    /// <summary>
+    ///  creating a combined mesh for a room layout 
+    /// </summary>
+    private GameObject MergeMesh()
+    {
+        GameObject room = new GameObject();
+
+        MeshFilter[] meshFilters = new MeshFilter[selectedObjects.Count];
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length];
+
+        int i = 0;
+        while (i < meshFilters.Length)
+        {
+            meshFilters[i] = selectedObjects[i].GetComponent<MeshFilter>();
+            selectedObjects[i].SetActive(false);
+            combine[i].mesh = meshFilters[i].sharedMesh;
+            combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
+            meshFilters[i].gameObject.SetActive(false);
+
+            i++;
+        }
+        room.AddComponent<MeshFilter>();
+        room.GetComponent<MeshFilter>().mesh = new Mesh();
+        room.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, true, true);
+        room.transform.GetComponent<MeshFilter>().mesh.Optimize();
+        room.transform.gameObject.SetActive(true);
+       // Debug.Log(room.GetComponent<MeshFilter>().mesh.subMeshCount);
+        return room;
+    }
 
     ///<summary>
     ///For area check
     ///</summary>
+
     private static float CalculateSurfaceArea(Mesh mesh)
     {
 
@@ -290,177 +378,25 @@ public class MovementController : MonoBehaviour
 
         return (float)(sum / 2.0);
     }
-    ///<summary>
-    ///Finding the outline of a 2D mesh
-    ///</summary>
-    private static List<Vector2> Outline2DArray(Mesh mesh)
+
+
+    private void FindChildren(string parent, string tg)
     {
-        List<Vector2> vr = new List<Vector2>();
-        var boundaryPath = EdgeHelper.GetEdges(mesh.triangles).FindBoundary().SortEdges();
-        Vector3[] vertices = mesh.vertices;
-        for (int i = 0; i < boundaryPath.Count; i++)
+        GameObject rt = GameObject.Find(parent);
+        if (rt != null)
         {
-            Vector3 pos = vertices[boundaryPath[i].v1];
-            vr.Add(new Vector2(pos.x, pos.z));
-        }
-
-        return vr;
-    }
-
-
-    public static bool AllMeshesHasCommonEdges(List<GameObject> objects)
-    {
-        bool pass = true;
-
-        List<bool> commonEdges = new List<bool>(objects.Count);
-
-        for (int i = 0; i < objects.Count; i++)
-        {
-            bool commonEdgeForThisMesh = false;
-
-            for (int j = 0; j < objects.Count; j++)
+            foreach (Transform child in rt.GetComponent<Transform>())
             {
-                if (i != j)
-                {
-                    bool commonEdge = MeshesHaveCommondge(objects[i], objects[j]);
-                    if (commonEdge == true)
-                    {
-                        commonEdgeForThisMesh = true;
-                    }
-                }
-            }
-            commonEdges.Add(commonEdgeForThisMesh);
-        }
+                child.tag = tg;
+                if (child.gameObject.GetComponent<MeshCollider>() == null) child.gameObject.AddComponent<MeshCollider>();
+                //if( child.GetComponent<Renderer>().material != tile) child.GetComponent<Renderer>().material = tile;
 
-        pass = !commonEdges.Contains(false);
-
-        return pass;
-    }
-
-    private static bool MeshesHaveCommondge(GameObject a, GameObject b)
-    {
-        int commonVertices = 0;
-
-        Vector3[] verticesA = a.GetComponent<MeshFilter>().mesh.vertices;
-        Vector3[] verticesB = b.GetComponent<MeshFilter>().mesh.vertices;
-
-        Vector3[] aworld = verticesA.Select(vertice => a.transform.TransformPoint(vertice)).ToArray();
-        Vector3[] bworld = verticesB.Select(vertice => b.transform.TransformPoint(vertice)).ToArray();
-
-
-        for (int i = 0; i < aworld.Length; i++)
-        {
-            for (int j = 0; j < bworld.Length; j++)
-            {
-                if (Math.Round(aworld[i].x, 2) == Math.Round(bworld[j].x, 2)
-                    && Math.Round(aworld[i].y, 2) == Math.Round(bworld[j].y, 2)
-                    && Math.Round(aworld[i].z, 2) == Math.Round(bworld[j].z, 2))
-                {
-                    commonVertices++;
-                }
             }
         }
-
-        return commonVertices > 1;
     }
+    #endregion
 
-
-
-    /*
-        #region Keyboard Navigation
-        /// <summary>
-        ///  Keyboard navigation - currently not in use
-        ///  requires the following vars
-        ///  
-    public float LerpTimeTranslation  = 0.4f;
-    public float LerpTimeRotation = 0.2f;
-    public float UnitDistance = 1f;
-    public float UnitRotationAngle= 7.5f;
-
-    private KeyCode[] movementKeys = { KeyCode.W, KeyCode.S, KeyCode.DownArrow, KeyCode.UpArrow, KeyCode.LeftArrow, KeyCode.RightArrow };
-    private KeyCode[] otherKeys = { KeyCode.RightShift, KeyCode.LeftShift };
     
-    /// </summary>
-    private void KeyboardNav()
-        {
-            // Using keyboard for linear movement
-            if (Input.anyKey && !movBlocked)
-            {
 
-                bool rot = true ? Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) : false;
-                float lerpTime = rot ? LerpTimeRotation : LerpTimeTranslation;
-                var unitP = new Vector3();
-                var unitR = new Quaternion();
-                var unitRInc = UnitRotationAngle;
 
-                if (Input.GetKeyDown(KeyCode.DownArrow))
-                {
-                    unitP = UnitDistance * Vector3.back;
-                    unitR = Quaternion.Euler(-unitRInc, 0, 0);
-                }
-                else if (Input.GetKeyDown(KeyCode.UpArrow))
-                {
-                    unitP = UnitDistance * Vector3.forward;
-                    unitR = Quaternion.Euler(unitRInc, 0, 0);
-                }
-                else if (Input.GetKeyDown(KeyCode.LeftArrow))
-                {
-                    unitP = UnitDistance * Vector3.left;
-                    unitR = Quaternion.Euler(0, unitRInc, 0);
-                }
-                else if (Input.GetKeyDown(KeyCode.RightArrow))
-                {
-                    unitP = UnitDistance * Vector3.right;
-                    unitR = Quaternion.Euler(0, -unitRInc, 0);
-                }
-                else if (Input.GetKeyDown(KeyCode.W))
-                {
-                    unitP = UnitDistance * Vector3.up;
-                    unitR = Quaternion.Euler(0, 0, unitRInc);
-                }
-                else if (Input.GetKeyDown(KeyCode.S))
-                {
-                    unitP = UnitDistance * Vector3.down;
-                    unitR = Quaternion.Euler(0, 0, -unitRInc);
-                }
-
-                foreach (var k in movementKeys)
-                {
-                    if (Input.GetKeyDown(k))
-                        StartCoroutine(moveOrRotateByUnit(currentObject.transform, unitP, unitR, lerpTime, rot));
-                }
-
-            }
-        }
-
-        private IEnumerator moveOrRotateByUnit(Transform objectToMove, Vector3 unitVector, Quaternion unitQuaternion, float lerpTime, bool rot)
-        {
-            movBlocked = true;
-            var startPosition = objectToMove.localPosition;
-            var startRotation = objectToMove.localRotation;
-            var startTime = Time.time;
-
-            while (Time.time - startTime < lerpTime)
-            {
-                if (rot)
-                {
-                    var updatedRotation = Quaternion.Lerp(startRotation, startRotation * unitQuaternion, (Time.time - startTime) / lerpTime);
-                    objectToMove.localRotation = updatedRotation;
-                }
-                else
-                {
-                    var updatedPosition = Vector3.Lerp(startPosition, unitVector + startPosition, (Time.time - startTime) / lerpTime);
-                    objectToMove.localPosition = updatedPosition;
-                }
-                yield return null;
-            }
-
-            //  option is to use just this instead too, if no sooth transition preferred
-            //objectToMove.localPosition = unitVector + startPosition;
-            movBlocked = false;
-            yield return null;
-        }
-
-        #endregion
-        */
 }

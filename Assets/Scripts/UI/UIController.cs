@@ -87,6 +87,7 @@ public class UIController : MonoBehaviour
 
     public void Validate()
     {
+        
         GameObject panel = Instantiate(panelPrefab);
         panel.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
 
@@ -104,9 +105,11 @@ public class UIController : MonoBehaviour
         var font = Resources.GetBuiltinResource<Font>("Arial.ttf");
 
         textComponent.font = font;
+
+        movementController.EdgeTypesWriter();
         // print message from validation class
     }
-
+    
     private void SpawnCameraButton()
     {
         GameObject button = Instantiate(togglePrefab);
@@ -166,16 +169,17 @@ public class UIController : MonoBehaviour
             //Debug.Log(json[i.ToString()]["name"]);
             string rName = json[i.ToString()]["name"].ToString().ToUpper();
             float minSize = float.Parse(json[i.ToString()]["min_area"].ToString());
+            bool circ = int.Parse(json[i.ToString()]["circulation"].ToString()) != 0;
             Color rColour = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
             Color rColourO = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
-            InstantiateButton(rName, 100f, -50-i*35, minSize, rColour, rColourO);
+            InstantiateButton(rName, 100f, -50-i*35, minSize, rColour, rColourO, circ);
         }
 
     }
+    
 
 
-
-    private void InstantiateButton(string rName,  float posX, float posY, float minSize, Color rColour, Color rColourO)
+    private void InstantiateButton(string rName,  float posX, float posY, float minSize, Color rColour, Color rColourO, bool circ)
     {
         GameObject button = Instantiate(buttonPrefab);
         button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
@@ -188,15 +192,15 @@ public class UIController : MonoBehaviour
         //button.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, sizeV);
 
         // add the create room function
-        button.GetComponent<Button>().onClick.AddListener(() => CallCreateRoom(rName,  minSize, rColour, rColourO));
+        button.GetComponent<Button>().onClick.AddListener(() => CallCreateRoom(rName,  minSize, rColour, rColourO, circ));
         
     }
 
-    private void CallCreateRoom(string rName,  float minSize, Color rColour, Color rColourO) 
+    private void CallCreateRoom(string rName,  float minSize, Color rColour, Color rColourO, bool circ) 
     {
         
         // create room
-        movementController.CreateRoom(rName, minSize, rColour, rColourO);
+        movementController.CreateRoom(rName, minSize, rColour, rColourO, circ);
 
     }
 

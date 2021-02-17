@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class Writer : MonoBehaviour
 {
-    string relativeJsonpath = @"\Mott MacDonald\Platform Design Programme - 0.10 Digital Configurator\WP5 Reference Implementation\5.7 Implementation\02_Design Configurators\Objects\";
+    readonly string relativeJsonpath = @"\Mott MacDonald\Platform Design Programme - 0.10 Digital Configurator\WP5 Reference Implementation\5.7 Implementation\02_Design Configurators\Objects\";
     string homePath;
     
 
@@ -34,7 +34,9 @@ public class Writer : MonoBehaviour
                 { "type", eg_room.Type },
                 { "vertices", roomsVertices },
                 { "height", eg_room.Height },
-                { "level", eg_room.Level }
+                { "level", eg_room.Level },
+                { "edgesExternal", eg_room.Edges },
+                { "circulation", eg_room.Circulation }
             };
 
             roomData.Add(roomProperties);

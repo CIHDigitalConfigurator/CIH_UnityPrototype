@@ -2444,6 +2444,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera2D: {fileID: 1649376540}
+--- !u!114 &2070515971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2070515963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a33368e39ccd18849b0204f6a6847f2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  validationMessage: asdf
 --- !u!114 &2097682566 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6235146385714688424, guid: 2f88faa420128e345a5b17f255b859e4,

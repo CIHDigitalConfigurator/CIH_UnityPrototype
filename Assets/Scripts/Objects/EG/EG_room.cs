@@ -12,4 +12,8 @@ public class EG_room : MonoBehaviour
     public List<Vector2> Vertices { get; set; }
     public float Level { get; set; }
 
+    public List<bool> Edges { get; set; }
+
+    public bool Circulation { get; set; }
+
 }
