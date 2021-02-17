@@ -87,24 +87,9 @@ public class UIController : MonoBehaviour
 
     public void Validate()
     {
-        GameObject panel = Instantiate(panelPrefab);
-        panel.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
-
-        GameObject panelText = new GameObject("validation message");
-        panelText.transform.SetParent(panel.transform);
-        var textComponent = panelText.AddComponent<Text>();
-
-        textComponent.GetComponent<RectTransform>().anchorMin = panel.GetComponent<RectTransform>().anchorMin;
-        textComponent.GetComponent<RectTransform>().anchorMax = panel.GetComponent<RectTransform>().anchorMax;
-        textComponent.GetComponent<RectTransform>().anchoredPosition = panel.GetComponent<RectTransform>().anchoredPosition;
-        
-        Validation v = gameObject.GetComponent<Validation>();
-        textComponent.text = v.validationMessage;
-
-        var font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-
-        textComponent.font = font;
-        // print message from validation class
+        GameObject panel = Instantiate(panelPrefab, mainCanvas.transform, false);
+        Validation validation = gameObject.GetComponent<Validation>();
+        panel.GetComponentInChildren<Text>().text = validation.validationMessage;
     }
 
     private void SpawnCameraButton()
