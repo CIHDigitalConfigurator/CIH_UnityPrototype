@@ -18,7 +18,7 @@ new Dictionary<string, JObject>();
 
     #region Private Variables
     // For now this 
-    string relativeJsonpath = @"\Mott MacDonald\Platform Design Programme - 0.10 Digital Configurator\WP5 Reference Implementation\5.7 Implementation\Assets\Interop Data\";
+    string relativeJsonpath = @"\Mott MacDonald\Platform Design Programme - 0.10 Digital Configurator\WP5 Reference Implementation\5.7 Implementation\02_Design Configurators\Objects\";
     string homePath;
     #endregion
 

@@ -22,7 +22,7 @@ public class LayerInitializer : MonoBehaviour
         //cam.cullingMask |= 1 << LayerMask.NameToLayer("Level 03");
 
         // Get tiles values from dictionary to array
-        JArray tileArray = JArray.Parse(GetComponent<Reader>().jsonFolder["level"]["level"].ToString());
+        JArray tileArray = JArray.Parse(GetComponent<Reader>().jsonFolder["02_IN_Levels"]["level"].ToString());
 
         levels = new List<OM_level>();
 

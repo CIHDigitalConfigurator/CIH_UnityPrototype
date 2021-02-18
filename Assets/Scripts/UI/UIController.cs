@@ -87,27 +87,10 @@ public class UIController : MonoBehaviour
 
     public void Validate()
     {
-        
-        GameObject panel = Instantiate(panelPrefab);
-        panel.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
-
-        GameObject panelText = new GameObject("validation message");
-        panelText.transform.SetParent(panel.transform);
-        var textComponent = panelText.AddComponent<Text>();
-
-        textComponent.GetComponent<RectTransform>().anchorMin = panel.GetComponent<RectTransform>().anchorMin;
-        textComponent.GetComponent<RectTransform>().anchorMax = panel.GetComponent<RectTransform>().anchorMax;
-        textComponent.GetComponent<RectTransform>().anchoredPosition = panel.GetComponent<RectTransform>().anchoredPosition;
-        
-        Validation v = gameObject.GetComponent<Validation>();
-        textComponent.text = v.validationMessage;
-
-        var font = Resources.GetBuiltinResource<Font>("Arial.ttf");
-
-        textComponent.font = font;
-
-        movementController.EdgeTypesWriter();
-        // print message from validation class    
+        GameObject panel = Instantiate(panelPrefab, mainCanvas.transform, false);
+        Validation validation = gameObject.GetComponent<Validation>();
+        panel.GetComponentInChildren<Text>().text = validation.validationMessage;
+  
     }
     
     private void SpawnCameraButton()
@@ -125,7 +108,7 @@ public class UIController : MonoBehaviour
     private void SpawnLevelButtons()
     {
         // Get level values from dictionary to array
-        JArray levelData = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["level"]["level"].ToString());
+        JArray levelData = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["02_IN_Levels"]["level"].ToString());
 
         for (int i = 0; i < levelData.Count; i++)
         {
@@ -160,6 +143,22 @@ public class UIController : MonoBehaviour
 
     private void SpawnButtons() 
     {
+
+        // Get tiles values from dictionary to array
+        JArray roomArray = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["02_IN_Rooms"]["room"].ToString());
+
+        int i = 0;
+        foreach (JToken tileData in roomArray)
+        {
+            string rName = tileData["name"].ToString().ToUpper();
+            float minSize = float.Parse(tileData["min_area"].ToString());
+            bool circ = false;// int.Parse(tileData["circulation"].ToString()) != 0;
+            Color rColour = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
+            Color rColourO = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
+            InstantiateButton(rName, 100f, -50 - i * 35, minSize, rColour, rColourO, circ);
+            i++;
+        }
+        /*
         string path = "Assets/Json/room_types.json";
         StreamReader a = new StreamReader(path);
         JObject json = JObject.Parse(a.ReadToEnd());
@@ -174,7 +173,7 @@ public class UIController : MonoBehaviour
             Color rColourO = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
             InstantiateButton(rName, 100f, -50-i*35, minSize, rColour, rColourO, circ);
         }
-
+        */
     }
     
 
