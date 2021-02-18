@@ -44,7 +44,7 @@ public class Writer : MonoBehaviour
         }
 
         string serializedRoomData = JsonConvert.SerializeObject(roomData.ToArray());
-        System.IO.File.WriteAllText(homePath + relativeJsonpath + "out_Rooms.json", serializedRoomData);
+        System.IO.File.WriteAllText(homePath + relativeJsonpath + "02_OUT_Rooms.json", serializedRoomData);
 
     }
 }

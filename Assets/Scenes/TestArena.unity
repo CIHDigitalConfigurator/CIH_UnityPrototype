@@ -2391,7 +2391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fileNames:
   - 02_IN_Levels.json
-  - 02_IN_Rooms.json
+  - 02_IN_RoomTypes.json
   - 02_IN_Tiles.json
 --- !u!114 &1961192743
 MonoBehaviour:

@@ -145,14 +145,14 @@ public class UIController : MonoBehaviour
     {
 
         // Get tiles values from dictionary to array
-        JArray roomArray = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["02_IN_Rooms"]["room"].ToString());
+        JArray roomArray = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["02_IN_RoomTypes"]["room"].ToString());
 
         int i = 0;
         foreach (JToken tileData in roomArray)
         {
             string rName = tileData["name"].ToString().ToUpper();
             float minSize = float.Parse(tileData["min_area"].ToString());
-            bool circ = false;// int.Parse(tileData["circulation"].ToString()) != 0;
+            bool circ =  tileData["circulation"].ToString() == "True" ? true : false;
             Color rColour = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
             Color rColourO = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
             InstantiateButton(rName, 100f, -50 - i * 35, minSize, rColour, rColourO, circ);
