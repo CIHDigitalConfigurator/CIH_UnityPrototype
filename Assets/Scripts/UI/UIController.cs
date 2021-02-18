@@ -90,7 +90,9 @@ public class UIController : MonoBehaviour
         GameObject panel = Instantiate(panelPrefab, mainCanvas.transform, false);
         Validation validation = gameObject.GetComponent<Validation>();
         panel.GetComponentInChildren<Text>().text = validation.validationMessage;
-  
+        movementController.EdgeTypesWriter();
+
+
     }
     
     private void SpawnCameraButton()
@@ -202,6 +204,7 @@ public class UIController : MonoBehaviour
         movementController.CreateRoom(rName, minSize, rColour, rColourO, circ);
 
     }
+
 
     public void EnableInputField() 
     {

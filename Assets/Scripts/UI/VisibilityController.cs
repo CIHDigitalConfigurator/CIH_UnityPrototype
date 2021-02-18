@@ -10,6 +10,7 @@ public class VisibilityController : MonoBehaviour
     public GameObject jsonReader;
     List<GameObject> parents;
     public List<OM_level> levels;
+    readonly string[] parentNames = new string[2] { "ROOM", "TILE" };
 
     // Start is called before the first frame update
     void Start()
@@ -22,9 +23,12 @@ public class VisibilityController : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
 
+ 
         // Find all parent GameObject names
-        var keys = jsonReader.GetComponent<Reader>().jsonFolder.Keys.ToArray();
-        parents = FindParents(keys);
+        //var keys = jsonReader.GetComponent<Reader>().jsonFolder.Keys.ToArray();
+
+        parents = FindParents(parentNames);
+        //parents = tempObjectList.SelectMany(d => d).ToList();
 
         // Find all levels
         levels = jsonReader.GetComponent<LayerInitializer>().levels;
@@ -49,6 +53,7 @@ public class VisibilityController : MonoBehaviour
 
     public void LevelHide(string layerName)
     {
+        parents = FindParents(parentNames);
         Tuple<float,float> leveRange = FindLevelRanges(levels, layerName);
         LoopThroughChildrenAndToggleVisibilityInRange(parents, leveRange.Item1, leveRange.Item2, false);
 
@@ -56,6 +61,7 @@ public class VisibilityController : MonoBehaviour
 
     public void LevelShow(string layerName)
     {
+        parents = FindParents(parentNames);
         Tuple<float, float> leveRange = FindLevelRanges(levels, layerName);
         LoopThroughChildrenAndToggleVisibilityInRange(parents, leveRange.Item1, leveRange.Item2, true);
     }

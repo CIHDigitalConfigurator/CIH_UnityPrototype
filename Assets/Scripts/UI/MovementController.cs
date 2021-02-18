@@ -177,6 +177,11 @@ public class MovementController : MonoBehaviour
     }
 
 
+    public void DeleteRoom()
+    {
+        // destroy selected rooms
+    }
+
     /// <summary>
     /// adding the  name as text to the displayed room mesh
     /// this is where we would also initialise serialisation (to pass to the next configurator)
@@ -214,13 +219,9 @@ public class MovementController : MonoBehaviour
 
             for (int j = 0; j < objects.Count; j++)
             {
-                if (i != j)
+                if (i != j && EdgeHelper.MeshesHaveCommondge(objects[i], objects[j]) == true)
                 {
-                    bool commonEdge = EdgeHelper.MeshesHaveCommondge(objects[i], objects[j]);
-                    if (commonEdge == true)
-                    {
-                        commonEdgeForThisMesh = true;
-                    }
+                    commonEdgeForThisMesh = true;
                 }
             }
             commonEdges.Add(commonEdgeForThisMesh);
