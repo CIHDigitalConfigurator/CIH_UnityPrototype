@@ -107,7 +107,8 @@ public class UIController : MonoBehaviour
         textComponent.font = font;
 
         movementController.EdgeTypesWriter();
-        // print message from validation class    }
+        // print message from validation class    
+    }
     
     private void SpawnCameraButton()
     {

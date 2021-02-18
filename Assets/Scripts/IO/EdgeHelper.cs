@@ -73,7 +73,7 @@ public static class EdgeHelper
             for (int n = i + 1; n < result.Count; n++)
             {
                 Edge a = result[n];
-                if (E.v2 == a.v1)
+                if (E.v2x == a.v1x && E.v2z == a.v1z)
                 {
                     // in this case they are already in order so just continoue with the next one
                     if (n == i + 1)
