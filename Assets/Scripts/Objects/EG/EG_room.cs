@@ -16,4 +16,6 @@ public class EG_room : MonoBehaviour
 
     public bool Circulation { get; set; }
 
+    public List<EdgeHelper.Edge> BoundaryEdges { get; set; }
+
 }

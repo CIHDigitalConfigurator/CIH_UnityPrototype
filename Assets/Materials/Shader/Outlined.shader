@@ -4,6 +4,7 @@
 	{
 		_Color("Main Color", Color) = (0.5,0.5,0.5,1)
 		_MainTex("Texture", 2D) = "white" {}
+		_EmissionColor("Emission Color", Color) = (0,0,0,1)
 
 		_FirstOutlineColor("Outline color", Color) = (1,0,0,0.5)
 		_FirstOutlineWidth("Outlines width", Range(0.0, 2.0)) = 0.15
@@ -31,6 +32,7 @@
 	uniform sampler2D _MainTex;
 	uniform float4 _Color;
 	uniform float _Angle;
+	uniform float4 _EmissionColor;
 
 	ENDCG
 
@@ -134,6 +136,7 @@
 			fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
 			o.Albedo = c.rgb;
 			o.Alpha = c.a;
+			o.Emission = _EmissionColor;
 		}
 		ENDCG
 	}

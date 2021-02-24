@@ -11,9 +11,6 @@ using UnityEngine.UI;
 /// IMPORTANT THINGS TO NOTE:
 /// - currently reading the names of speckle streams - this need to remain unchanged in order to preserve the tile tagging (not applicable while reading from json)
 /// 
-/// TODO:
-/// - need to add adjacency check (currently checking only for area)
-/// 
 /// </summary>
 [RequireComponent(typeof(EffectsManager))]
 public class MovementController : MonoBehaviour
@@ -125,9 +122,9 @@ public class MovementController : MonoBehaviour
     /// <param name="rType"> room type comes with a set of parameters defining creation criteria; currently embedded in a json </param>
     public void CreateRoom(string rType, float minSize, Color rColour, Color rColourO, bool circ)
     {
-        bool adjacenciesCorrect = AllMeshesHasCommonEdges(selectedObjects);
+        // check whether there are no disjointed segments
 
-        if (adjacenciesCorrect)
+        if (AllMeshesHasCommonEdges(selectedObjects))
         {
             GameObject tempRoom = MergeMesh();
             float rArea = CalculateSurfaceArea(tempRoom.GetComponent<MeshFilter>().sharedMesh);
@@ -145,6 +142,7 @@ public class MovementController : MonoBehaviour
             CurrentRoom = tempRoom;
             CurrentRoom.tag = "room";
             CurrentRoom.AddComponent<MeshRenderer>();
+            CurrentRoom.AddComponent<MeshCollider>();
             CurrentRoom.GetComponent<Renderer>().material = matTemplate;
             CurrentRoom.GetComponent<Renderer>().material.SetColor("_Color", rColour);
             CurrentRoom.GetComponent<Renderer>().material.SetColor("_FirstOutlineColor", rColourO);
@@ -179,7 +177,27 @@ public class MovementController : MonoBehaviour
 
     public void DeleteRoom()
     {
-        // destroy selected rooms
+        List<GameObject> roomList = new List<GameObject>();
+
+        foreach (var room in selectedObjects)
+        {
+            roomList.Add(room);   
+            Transform[] allChildren = room.GetComponentsInChildren<Transform>();
+            List<GameObject> tempChildren = new List<GameObject>();
+            for (int i = 0; i<room.transform.childCount; i++)
+            {
+                if (room.transform.GetChild(i).gameObject.tag == "tile")
+                {
+                    tempChildren.Add(room.transform.GetChild(i).gameObject);
+                    room.transform.GetChild(i).gameObject.SetActive(true);
+                }
+            }
+            foreach (var child in tempChildren) { child.transform.SetParent(GameObject.FindGameObjectWithTag("tileParent").transform); }
+        }
+
+        Deselect();
+
+        foreach (var room in roomList) { Destroy(room); };
     }
 
     /// <summary>
@@ -210,24 +228,26 @@ public class MovementController : MonoBehaviour
     public static bool AllMeshesHasCommonEdges(List<GameObject> objects)
     {
         bool pass = true;
-
-        List<bool> commonEdges = new List<bool>(objects.Count);
-
-        for (int i = 0; i < objects.Count; i++)
+        if (objects.Count > 1)
         {
-            bool commonEdgeForThisMesh = false;
+            List<bool> commonEdges = new List<bool>(objects.Count);
 
-            for (int j = 0; j < objects.Count; j++)
+            for (int i = 0; i < objects.Count; i++)
             {
-                if (i != j && EdgeHelper.MeshesHaveCommondge(objects[i], objects[j]) == true)
-                {
-                    commonEdgeForThisMesh = true;
-                }
-            }
-            commonEdges.Add(commonEdgeForThisMesh);
-        }
+                bool commonEdgeForThisMesh = false;
 
-        pass = !commonEdges.Contains(false);
+                for (int j = 0; j < objects.Count; j++)
+                {
+                    if (i != j && EdgeHelper.MeshesHaveCommondge(objects[i], objects[j]) == true)
+                    {
+                        commonEdgeForThisMesh = true;
+                    }
+                }
+                commonEdges.Add(commonEdgeForThisMesh);
+            }
+
+            pass = !commonEdges.Contains(false);
+        }
 
         return pass;
     }
@@ -284,35 +304,34 @@ public class MovementController : MonoBehaviour
 
         // external edge -> True
 
+        for (int i = 0; i < rooms.Length; i++) 
+        { 
+            rooms[i].GetComponent<EG_room>().BoundaryEdges = EdgeHelper.GetEdges(rooms[i].GetComponent<MeshFilter>().mesh.triangles, rooms[i].GetComponent<MeshFilter>().mesh.vertices).FindBoundary().SortEdges();
+        }
+
         for (int i = 0; i < rooms.Length; i++)
         {
             List<bool> edgeTypes_i = new List<bool>();
-            Mesh mesh_i = rooms[i].GetComponent<MeshFilter>().mesh;
-            var boundaryPath_i = EdgeHelper.GetEdges(mesh_i.triangles, mesh_i.vertices).FindBoundary().SortEdges();
-            Vector3[] vertices_i = mesh_i.vertices;
-            foreach (var edge_i in boundaryPath_i)
+            foreach (var edge_i in rooms[i].GetComponent<EG_room>().BoundaryEdges)
             {
                 bool intrnl = false;
                 for (int j = 0; j < rooms.Length; j++)
                 {
                     if (j != i)
                     {
-                        Mesh mesh_j = rooms[j].GetComponent<MeshFilter>().mesh;
-                        var boundaryPath_j = EdgeHelper.GetEdges(mesh_j.triangles, mesh_j.vertices).FindBoundary().SortEdges();
-                        Vector3[] vertices_j = mesh_j.vertices;
-                        foreach (var edge_j in boundaryPath_j)
+
+                        foreach (var edge_j in rooms[j].GetComponent<EG_room>().BoundaryEdges)
                         {
                           
                             if (edge_i.v1x == edge_j.v1x && edge_i.v1z == edge_j.v1z && edge_i.v2x == edge_j.v2x && edge_i.v2z == edge_j.v2z|| (edge_i.v1x == edge_j.v2x && edge_i.v1z == edge_j.v2z && edge_i.v2x == edge_j.v1x && edge_i.v2z == edge_j.v1z))
                             {
                                 intrnl = true;
-                                Debug.Log(edge_i.v1x + " " + edge_j.v1x + " " +i +" " +j);
                                 break;
                             }
                         }
                     }
                 }
-                Debug.Log("intrnl " + intrnl);
+                //Debug.Log("intrnl " + intrnl);
                 edgeTypes_i.Add(!intrnl);
             }
 
@@ -340,6 +359,7 @@ public class MovementController : MonoBehaviour
         while (i < meshFilters.Length)
         {
             meshFilters[i] = selectedObjects[i].GetComponent<MeshFilter>();
+            selectedObjects[i].transform.SetParent(room.transform);
             selectedObjects[i].SetActive(false);
             combine[i].mesh = meshFilters[i].sharedMesh;
             combine[i].transform = meshFilters[i].transform.localToWorldMatrix;
@@ -352,7 +372,7 @@ public class MovementController : MonoBehaviour
         room.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine, true, true);
         room.transform.GetComponent<MeshFilter>().mesh.Optimize();
         room.transform.gameObject.SetActive(true);
-       // Debug.Log(room.GetComponent<MeshFilter>().mesh.subMeshCount);
+
         return room;
     }
 
@@ -390,7 +410,6 @@ public class MovementController : MonoBehaviour
             {
                 child.tag = tg;
                 if (child.gameObject.GetComponent<MeshCollider>() == null) child.gameObject.AddComponent<MeshCollider>();
-                //if( child.GetComponent<Renderer>().material != tile) child.GetComponent<Renderer>().material = tile;
 
             }
         }

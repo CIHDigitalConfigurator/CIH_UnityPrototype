@@ -22,7 +22,8 @@ public class UIController : MonoBehaviour
     RaycastController raycastController;
     LayerVisibilityController layervisibilityController;
     VisibilityController visibilityController;
-    CameraViewsControler cameraViewsControler;
+    //CameraViewsControler cameraViewsControler;
+    CameraController cameraController;
     
     #endregion
 
@@ -32,7 +33,7 @@ public class UIController : MonoBehaviour
     public GameObject togglePrefab;
     public GameObject errorScreen;
     public GameObject jsonReader;
-    public GameObject panelPrefab;
+    public GameObject scrollPanel;
     public GameObject jsonWriter;
 
 
@@ -42,8 +43,9 @@ public class UIController : MonoBehaviour
         movementController = gameObject.GetComponent<MovementController>();
         raycastController = gameObject.GetComponent<RaycastController>();
         layervisibilityController = Camera.main.GetComponent<LayerVisibilityController>();
+        cameraController = Camera.main.GetComponent<CameraController>();
 
-        cameraViewsControler = gameObject.GetComponent<CameraViewsControler>();
+        //cameraViewsControler = gameObject.GetComponent<CameraViewsControler>();
 
         SpawnButtons();
         SpawnCameraButton();
@@ -56,45 +58,7 @@ public class UIController : MonoBehaviour
         visibilityController = gameObject.GetComponent<VisibilityController>();
     }
 
-
-    public void SendToJson()
-    {
-        jsonWriter.GetComponent<Writer>().WriteJson();
-    }
-    
-    public void PauseGame() 
-    {
-        /// <summary>
-        /// Adds functionality associated with pausing - an example of enabling a blocking image on canvas here
-        /// </summary>
-        if (mainCanvas.GetComponent<Image>().enabled)
-        {
-            mainCanvas.GetComponent<Image>().enabled = false;
-            mainCanvas.GetComponentInChildren<Text>().text = "Pause";
-            movementController.MovBlocked = false ? movementController.CurrentObject != null : true;
-            raycastController.RayBlocked = false;
-
-        }
-        else 
-        {
-            mainCanvas.GetComponent<Image>().enabled = true;
-            mainCanvas.GetComponentInChildren<Text>().text = "Restart";
-            movementController.MovBlocked = true;
-            raycastController.RayBlocked = true;
-        }
-           
-    }
-
-    public void Validate()
-    {
-        GameObject panel = Instantiate(panelPrefab, mainCanvas.transform, false);
-        Validation validation = gameObject.GetComponent<Validation>();
-        panel.GetComponentInChildren<Text>().text = validation.validationMessage;
-        movementController.EdgeTypesWriter();
-
-
-    }
-    
+    #region Buttons Spawning
     private void SpawnCameraButton()
     {
         GameObject button = Instantiate(togglePrefab);
@@ -104,7 +68,8 @@ public class UIController : MonoBehaviour
         button.GetComponent<RectTransform>().anchoredPosition = new Vector2(100f, -400f);
 
         button.GetComponentInChildren<Text>().text = "2D";
-        button.GetComponent<Toggle>().onValueChanged.AddListener((value) => cameraViewsControler.Toggle2D3D(value));
+        button.GetComponent<Toggle>().onValueChanged.AddListener((value) => Toggle2D3D(value));
+        button.GetComponent<Toggle>().isOn = false;
     }
 
     private void SpawnLevelButtons()
@@ -126,24 +91,7 @@ public class UIController : MonoBehaviour
             button.GetComponent<Toggle>().onValueChanged.AddListener((value) => LayerToggle(value, name));
         }
     }
-
-    private void LayerToggle(bool isOn, string name)
-    {
-        if (isOn)
-        {
-            //layervisibilityController.LayerCullingShow(Camera.main, name);
-            visibilityController.LevelShow(name);
-        }
-        else
-        {
-            //layervisibilityController.LayerCullingHide(Camera.main, name);
-            visibilityController.LevelHide(name);
-
-        }
-    }
-
-
-    private void SpawnButtons() 
+    private void SpawnButtons()
     {
 
         // Get tiles values from dictionary to array
@@ -154,58 +102,60 @@ public class UIController : MonoBehaviour
         {
             string rName = tileData["name"].ToString().ToUpper();
             float minSize = float.Parse(tileData["min_area"].ToString());
-            bool circ =  tileData["circulation"].ToString() == "True" ? true : false;
+            bool circ = tileData["circulation"].ToString() == "True" ? true : false;
             Color rColour = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
             Color rColourO = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
             InstantiateButton(rName, 100f, -50 - i * 35, minSize, rColour, rColourO, circ);
             i++;
         }
-        /*
-        string path = "Assets/Json/room_types.json";
-        StreamReader a = new StreamReader(path);
-        JObject json = JObject.Parse(a.ReadToEnd());
-        //int roomCount = json.Count;
-        for (int i = 0; i < json.Count; i++) 
+
+    }
+
+    #endregion
+
+    #region Button Triggered Functions
+    public void SendToJson()
+    {
+        jsonWriter.GetComponent<Writer>().WriteJson();
+    }
+
+    public void Toggle2D3D(bool value) 
+    {
+        cameraController.Toggle2D3D(value);
+    }
+
+    public void PauseGame()
+    {
+        /// <summary>
+        /// Adds functionality associated with pausing - an example of enabling a blocking image on canvas here
+        /// </summary>
+        if (mainCanvas.GetComponent<Image>().enabled)
         {
-            //Debug.Log(json[i.ToString()]["name"]);
-            string rName = json[i.ToString()]["name"].ToString().ToUpper();
-            float minSize = float.Parse(json[i.ToString()]["min_area"].ToString());
-            bool circ = int.Parse(json[i.ToString()]["circulation"].ToString()) != 0;
-            Color rColour = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
-            Color rColourO = Random.ColorHSV(0f, 1f, 0.4f, 0.7f, 0.5f, 1f);
-            InstantiateButton(rName, 100f, -50-i*35, minSize, rColour, rColourO, circ);
+            mainCanvas.GetComponent<Image>().enabled = false;
+            mainCanvas.GetComponentInChildren<Text>().text = "Pause";
+            movementController.MovBlocked = false ? movementController.CurrentObject != null : true;
+            raycastController.RayBlocked = false;
+
         }
-        */
+        else
+        {
+            mainCanvas.GetComponent<Image>().enabled = true;
+            mainCanvas.GetComponentInChildren<Text>().text = "Restart";
+            movementController.MovBlocked = true;
+            raycastController.RayBlocked = true;
+        }
+
     }
-    
 
-
-    private void InstantiateButton(string rName,  float posX, float posY, float minSize, Color rColour, Color rColourO, bool circ)
+    public void Validate()
     {
-        GameObject button = Instantiate(buttonPrefab);
-        button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
-        button.GetComponent<RectTransform>().anchoredPosition = new Vector2(posX, posY);
-
-        button.GetComponentInChildren<Text>().text = rName;
-
-        // if the size was to be altered
-        //button.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, sizeH);
-        //button.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, sizeV);
-
-        // add the create room function
-        button.GetComponent<Button>().onClick.AddListener(() => CallCreateRoom(rName,  minSize, rColour, rColourO, circ));
-        
-    }
-
-    private void CallCreateRoom(string rName,  float minSize, Color rColour, Color rColourO, bool circ) 
-    {
-        
-        // create room
-        movementController.CreateRoom(rName, minSize, rColour, rColourO, circ);
+        //GameObject panel = Instantiate(panelPrefab, mainCanvas.transform, false);
+        if (!scrollPanel.activeSelf) scrollPanel.SetActive(true);
+        Validation validation = gameObject.GetComponent<Validation>();
+        scrollPanel.GetComponentInChildren<Text>().text = validation.validationMessage;
+        movementController.EdgeTypesWriter();
 
     }
-
-
     public void EnableInputField() 
     {
         // enable background image
@@ -230,8 +180,48 @@ public class UIController : MonoBehaviour
 
     }
 
+    #endregion
+    #region Utilities
+    private void LayerToggle(bool isOn, string name)
+    {
+        if (isOn)
+        {
+            //layervisibilityController.LayerCullingShow(Camera.main, name);
+            visibilityController.LevelShow(name);
+        }
+        else
+        {
+            //layervisibilityController.LayerCullingHide(Camera.main, name);
+            visibilityController.LevelHide(name);
 
-    
+        }
+    }
+
+    private void InstantiateButton(string rName, float posX, float posY, float minSize, Color rColour, Color rColourO, bool circ)
+    {
+        GameObject button = Instantiate(buttonPrefab);
+        button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
+        button.GetComponent<RectTransform>().anchoredPosition = new Vector2(posX, posY);
+
+        button.GetComponentInChildren<Text>().text = rName;
+
+        // if the size was to be altered
+        //button.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, sizeH);
+        //button.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, sizeV);
+
+        // add the create room function
+        button.GetComponent<Button>().onClick.AddListener(() => CallCreateRoom(rName, minSize, rColour, rColourO, circ));
+
+    }
+
+    private void CallCreateRoom(string rName, float minSize, Color rColour, Color rColourO, bool circ)
+    {
+
+        // create room
+        movementController.CreateRoom(rName, minSize, rColour, rColourO, circ);
+
+    }
+    #endregion
     ///<remarks>
     ///NW
     ///[MenuItem("AssetDatabase/LoadAllAssetsAtPath")]

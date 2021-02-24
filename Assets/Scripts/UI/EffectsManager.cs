@@ -26,7 +26,8 @@ public class EffectsManager : MonoBehaviour
         {
             foreach (var go in GameObject.FindGameObjectsWithTag(tg)) 
             {
-                go.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
+                ChangeEmission(go, Color.green, 0f);
+                //go.GetComponent<Renderer>().material.DisableKeyword("_EMISSION");
             }
         }
         foreach (var so in selectedObjects) 
@@ -46,7 +47,7 @@ public class EffectsManager : MonoBehaviour
         {
             if (gameObject.GetComponent<Renderer>() != null)
             {
-                gameObject.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+                //gameObject.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
                 gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", color*emissionIntensity);
             }
         }

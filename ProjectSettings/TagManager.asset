@@ -13,6 +13,8 @@ TagManager:
   - eventSystem
   - tile
   - room
+  - valPanel
+  - tileParent
   layers:
   - Default
   - TransparentFX
