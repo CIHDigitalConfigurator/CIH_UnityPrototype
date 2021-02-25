@@ -15,9 +15,11 @@ public class RaycastController : MonoBehaviour
     // Start is called before the first frame update
 
     private MovementController movementController;
+    private CameraController cameraContoller;
     void Awake()
     {
         movementController = gameObject.GetComponent<MovementController>();
+        cameraContoller = Camera.main.gameObject.GetComponent<CameraController>();
     }
 
     public GameObject OnClick()
@@ -28,9 +30,10 @@ public class RaycastController : MonoBehaviour
             return null;
         }
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //Camera camera = (Camera)FindObjectOfType(typeof(Camera));
+        Camera camera =  cameraContoller.camera2D.enabled ? cameraContoller.camera2D : Camera.main;
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         Physics.Raycast(ray, out var clickHit);
-
         GameObject retOb = null;
 
         if (clickHit.collider != null)

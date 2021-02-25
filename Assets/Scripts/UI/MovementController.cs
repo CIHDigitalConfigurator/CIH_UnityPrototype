@@ -181,18 +181,21 @@ public class MovementController : MonoBehaviour
 
         foreach (var room in selectedObjects)
         {
-            roomList.Add(room);   
-            Transform[] allChildren = room.GetComponentsInChildren<Transform>();
-            List<GameObject> tempChildren = new List<GameObject>();
-            for (int i = 0; i<room.transform.childCount; i++)
+            if (room.tag == "room")
             {
-                if (room.transform.GetChild(i).gameObject.tag == "tile")
+                roomList.Add(room);
+                Transform[] allChildren = room.GetComponentsInChildren<Transform>();
+                List<GameObject> tempChildren = new List<GameObject>();
+                for (int i = 0; i < room.transform.childCount; i++)
                 {
-                    tempChildren.Add(room.transform.GetChild(i).gameObject);
-                    room.transform.GetChild(i).gameObject.SetActive(true);
+                    if (room.transform.GetChild(i).gameObject.tag == "tile")
+                    {
+                        tempChildren.Add(room.transform.GetChild(i).gameObject);
+                        room.transform.GetChild(i).gameObject.SetActive(true);
+                    }
                 }
+                foreach (var child in tempChildren) { child.transform.SetParent(GameObject.FindGameObjectWithTag("tileParent").transform); }
             }
-            foreach (var child in tempChildren) { child.transform.SetParent(GameObject.FindGameObjectWithTag("tileParent").transform); }
         }
 
         Deselect();

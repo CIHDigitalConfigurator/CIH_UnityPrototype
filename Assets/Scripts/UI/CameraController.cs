@@ -18,16 +18,20 @@ public class CameraController : MonoBehaviour
     #region Private Variables
     //private float maxVertAngle = 80f;
     private Vector2 camPosition;
+    private Vector2 cam2DPosition;
     private Vector2 camRotation;
     private float fov, prevWheel, size;
 
-    private bool c2D;
     #endregion
     void Start() 
     {
 
         camPosition.x = Camera.main.transform.position.x;
         camPosition.y = Camera.main.transform.position.y;
+
+        cam2DPosition.x = camera2D.gameObject.transform.position.x;
+        cam2DPosition.y = camera2D.gameObject.transform.position.y;
+
 
         camRotation.y = Camera.main.transform.rotation.eulerAngles.x;
         camRotation.x = Camera.main.transform.rotation.eulerAngles.y;
@@ -48,33 +52,47 @@ public class CameraController : MonoBehaviour
         
         if (Input.GetMouseButton(1)) 
         {
-            camRotation.x += Input.GetAxis("Mouse X") * SensitivityRotation;
-            camRotation.y -= Input.GetAxis("Mouse Y") * SensitivityRotation;
-            camRotation.x = Mathf.Repeat(camRotation.x, 360);
-            // clamping vertical rotation - can be added back if required
-            //currentRotation.y = Mathf.Clamp(currentRotation.y, -maxYAngle, maxYAngle);  
-            Camera.main.transform.rotation = Quaternion.Euler(camRotation.y, camRotation.x, Camera.main.transform.rotation.eulerAngles.z);
+            if (!camera2D.enabled)
+            {
+                camRotation.x += Input.GetAxis("Mouse X") * SensitivityRotation;
+                camRotation.y -= Input.GetAxis("Mouse Y") * SensitivityRotation;
+                camRotation.x = Mathf.Repeat(camRotation.x, 360);
+                // clamping vertical rotation - can be added back if required
+                //currentRotation.y = Mathf.Clamp(currentRotation.y, -maxYAngle, maxYAngle);  
+                Camera.main.transform.rotation = Quaternion.Euler(camRotation.y, camRotation.x, Camera.main.transform.rotation.eulerAngles.z);
+            }
         }
 
         if (Input.GetMouseButton(2)) 
         {
-            camPosition.x -= Input.GetAxis("Mouse X") * SensitivityPosition;
-            camPosition.y -= Input.GetAxis("Mouse Y") * SensitivityPosition;
-            Camera.main.transform.position = new Vector3(camPosition.x, camPosition.y, Camera.main.transform.position.z);
+            if (camera2D.enabled)
+            {
+                cam2DPosition.x -= Input.GetAxis("Mouse X") * SensitivityPosition;
+                cam2DPosition.y -= Input.GetAxis("Mouse Y") * SensitivityPosition;
+                camera2D.transform.position = new Vector3(cam2DPosition.x, camera2D.transform.position.y, cam2DPosition.y );
+            }
+            else 
+            {
+                camPosition.x -= Input.GetAxis("Mouse X") * SensitivityPosition;
+                camPosition.y -= Input.GetAxis("Mouse Y") * SensitivityPosition;
+                Camera.main.transform.position = new Vector3(camPosition.x, camPosition.y, Camera.main.transform.position.z);
+            }
+            
         }
 
         if (Input.GetAxis("Mouse ScrollWheel") != prevWheel) 
         {
             
-            if (c2D)
+            if (camera2D.enabled)
             {
-                fov -= Input.GetAxis("Mouse ScrollWheel") * SensitivityScroll;
-                Camera.main.fieldOfView = fov;
+
+                size -= Input.GetAxis("Mouse ScrollWheel") * SensitivityScroll;
+                camera2D.orthographicSize = size;
             }
             else 
             {
-                size -= Input.GetAxis("Mouse ScrollWheel") * SensitivityScroll;
-                camera2D.orthographicSize = size;
+                fov -= Input.GetAxis("Mouse ScrollWheel") * SensitivityScroll;
+                Camera.main.fieldOfView = fov;
             }
             
         }
