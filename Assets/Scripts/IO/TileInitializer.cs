@@ -29,7 +29,7 @@ public class TileInitializer : MonoBehaviour
         yield return new WaitUntil(() => this.GetComponent<LayerInitializer>().layersCompleted);
 
         // Get tiles values from dictionary to array
-        JArray tileArray = JArray.Parse(GetComponent<Reader>().jsonFolder["02_IN_Tiles"]["tile"].ToString());
+        JArray tileArray = JArray.Parse(GetComponent<Reader>().jsonFolder["02_IN_Tiles"].ToString());
 
         // create parent gameobject
         parentTile = new GameObject

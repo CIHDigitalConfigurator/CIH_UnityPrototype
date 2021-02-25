@@ -11,8 +11,8 @@ public class Reader : MonoBehaviour
     #region Public Variables
     public List<string> fileNames = new List<string>();
 
-    public Dictionary<string, JObject> jsonFolder =
-new Dictionary<string, JObject>();
+    public Dictionary<string, JArray> jsonFolder =
+new Dictionary<string, JArray>();
 
     #endregion
 
@@ -31,7 +31,7 @@ new Dictionary<string, JObject>();
         {
             StreamReader streamReader = new StreamReader(homePath + relativeJsonpath + fileNames[i]);
 
-            JObject json = JObject.Parse(streamReader.ReadToEnd());
+            JArray json = JArray.Parse(streamReader.ReadToEnd().ToString());
             jsonFolder.Add(fileNames[i].Split('.')[0], json);
 
             streamReader.Close();

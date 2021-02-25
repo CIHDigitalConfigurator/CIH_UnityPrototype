@@ -960,8 +960,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onStartBehaviour: 2
   serverUrl: https://hestia.speckle.works/api/
-  startLoginEmail: justyna.szy@gmail.com
-  startLoginPassword: motherlode
+  startLoginEmail: 
+  startLoginPassword: 
   meshMaterial: {fileID: 2100000, guid: e46b083486507d942b87b5f1542d9548, type: 2}
   lineMaterial: {fileID: 0}
   pointMaterial: {fileID: 0}

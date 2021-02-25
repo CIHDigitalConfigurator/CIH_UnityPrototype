@@ -75,7 +75,7 @@ public class UIController : MonoBehaviour
     private void SpawnLevelButtons()
     {
         // Get level values from dictionary to array
-        JArray levelData = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["02_IN_Levels"]["level"].ToString());
+        JArray levelData = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["02_IN_Levels"].ToString());
 
         for (int i = 0; i < levelData.Count; i++)
         {
@@ -95,7 +95,7 @@ public class UIController : MonoBehaviour
     {
 
         // Get tiles values from dictionary to array
-        JArray roomArray = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["02_IN_RoomTypes"]["room"].ToString());
+        JArray roomArray = JArray.Parse(jsonReader.GetComponent<Reader>().jsonFolder["02_IN_RoomTypes"].ToString());
 
         int i = 0;
         foreach (JToken tileData in roomArray)
