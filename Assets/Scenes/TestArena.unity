@@ -2985,7 +2985,7 @@ PrefabInstance:
     - target: {fileID: 6235146385714688421, guid: 2f88faa420128e345a5b17f255b859e4,
         type: 3}
       propertyPath: TagList.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6235146385714688421, guid: 2f88faa420128e345a5b17f255b859e4,
         type: 3}
@@ -2996,6 +2996,11 @@ PrefabInstance:
         type: 3}
       propertyPath: TagList.Array.data[1]
       value: room
+      objectReference: {fileID: 0}
+    - target: {fileID: 6235146385714688421, guid: 2f88faa420128e345a5b17f255b859e4,
+        type: 3}
+      propertyPath: TagList.Array.data[2]
+      value: exterior
       objectReference: {fileID: 0}
     - target: {fileID: 6235146385714688423, guid: 2f88faa420128e345a5b17f255b859e4,
         type: 3}
@@ -3062,6 +3067,11 @@ PrefabInstance:
       propertyPath: inputText
       value: 
       objectReference: {fileID: 999847552}
+    - target: {fileID: 6235146385714688424, guid: 2f88faa420128e345a5b17f255b859e4,
+        type: 3}
+      propertyPath: matExterior
+      value: 
+      objectReference: {fileID: 2100000, guid: 40de0853850ba55439f8508c684fb91a, type: 2}
     - target: {fileID: 6235146385714688424, guid: 2f88faa420128e345a5b17f255b859e4,
         type: 3}
       propertyPath: matTemplate

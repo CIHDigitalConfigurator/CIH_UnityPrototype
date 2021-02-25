@@ -11,7 +11,7 @@ public class RaycastController : MonoBehaviour
     /// Tag list allows for specifying which objects are selectable in run time (via tags)
     /// ATM 'tile' is hardcoded as a tag for selectable voxals
     /// </remarks>
-    public string[] TagList = { "tile", "room" };
+    public string[] TagList = { "tile", "room", "exterior" };
     // Start is called before the first frame update
 
     private MovementController movementController;
@@ -58,6 +58,12 @@ public class RaycastController : MonoBehaviour
                         if (!rInSel) retOb = clickHit.collider.gameObject;
                     }
                     else if (tg == "room") 
+                    {
+                        movementController.Deselect();
+                        clicked = true;
+                        retOb = clickHit.collider.gameObject;
+                    }
+                    else if (tg == "exterior")
                     {
                         movementController.Deselect();
                         clicked = true;

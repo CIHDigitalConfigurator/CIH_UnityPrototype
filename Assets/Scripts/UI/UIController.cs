@@ -109,6 +109,8 @@ public class UIController : MonoBehaviour
             i++;
         }
 
+        InstantiateVoidButton(100f, -50 - i * 35);
+
     }
 
     #endregion
@@ -214,11 +216,33 @@ public class UIController : MonoBehaviour
 
     }
 
+
+    private void InstantiateVoidButton(float posX, float posY)
+    {
+        GameObject button = Instantiate(buttonPrefab);
+        button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
+        button.GetComponent<RectTransform>().anchoredPosition = new Vector2(posX, posY);
+
+        button.GetComponentInChildren<Text>().text = "EXTERNAL";
+
+        // add the create room function
+        button.GetComponent<Button>().onClick.AddListener(() => CallCreateVoid());
+
+    }
+
     private void CallCreateRoom(string rName, float minSize, Color rColour, Color rColourO, bool circ)
     {
 
         // create room
         movementController.CreateRoom(rName, minSize, rColour, rColourO, circ);
+
+    }
+
+    private void CallCreateVoid()
+    {
+
+        // create room
+        movementController.CreateVoid();
 
     }
     #endregion

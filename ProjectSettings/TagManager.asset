@@ -15,6 +15,7 @@ TagManager:
   - room
   - valPanel
   - tileParent
+  - exterior
   layers:
   - Default
   - TransparentFX

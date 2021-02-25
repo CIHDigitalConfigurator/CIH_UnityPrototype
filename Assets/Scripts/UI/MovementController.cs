@@ -27,11 +27,14 @@ public class MovementController : MonoBehaviour
 
     public Material site;
 
+    public Material matExterior;
+
     public Text inputText;
 
     public float currentArea;
 
     GameObject parentRoom;
+    GameObject parentExterior;
 
     #endregion
 
@@ -54,6 +57,11 @@ public class MovementController : MonoBehaviour
         parentRoom = new GameObject
         {
             name = "ROOM"
+        };
+
+        parentExterior = new GameObject
+        {
+            name = "EXTERIOR"
         };
     }
 
@@ -175,13 +183,15 @@ public class MovementController : MonoBehaviour
     }
 
 
+
+
     public void DeleteRoom()
     {
         List<GameObject> roomList = new List<GameObject>();
 
         foreach (var room in selectedObjects)
         {
-            if (room.tag == "room")
+            if (room.tag == "room" || room.tag == "exterior")
             {
                 roomList.Add(room);
                 Transform[] allChildren = room.GetComponentsInChildren<Transform>();
@@ -201,6 +211,24 @@ public class MovementController : MonoBehaviour
         Deselect();
 
         foreach (var room in roomList) { Destroy(room); };
+    }
+
+    public void CreateVoid()
+    {
+        GameObject tempRoom = MergeMesh();
+
+        CurrentRoom = tempRoom;
+        CurrentRoom.tag = "exterior";
+
+        CurrentRoom.AddComponent<MeshRenderer>();
+        CurrentRoom.AddComponent<MeshCollider>();
+        CurrentRoom.GetComponent<Renderer>().material = matExterior;
+        CurrentRoom.transform.SetParent(parentExterior.transform);
+
+        CurrentRoom.name = "exterior";
+
+        Deselect();
+
     }
 
     /// <summary>
