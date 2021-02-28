@@ -237,14 +237,14 @@ public class MovementController : MonoBehaviour
     /// </summary>
     public void NameRoom()
     {
-        var tiles = GameObject.FindGameObjectsWithTag("tile");
+        //var tiles = GameObject.FindGameObjectsWithTag("tile");
 
         string rname = inputText.text;
         CurrentRoom.name = rname;
         GameObject nameText = new GameObject();
         nameText.AddComponent<TextMesh>();
         nameText.GetComponent<TextMesh>().text = rname + "\n " + (Math.Round(currentArea)).ToString() + " m²";
-        nameText.transform.position = CurrentRoom.GetComponent<Renderer>().bounds.center;
+        nameText.transform.position = CurrentRoom.GetComponent<Renderer>().bounds.center + new Vector3(0, 0.1f, 0);
         nameText.transform.parent = CurrentRoom.transform;
         nameText.GetComponent<TextMesh>().alignment = TextAlignment.Center;
         nameText.GetComponent<TextMesh>().anchor = TextAnchor.UpperCenter;

@@ -114,7 +114,6 @@ public class UIController : MonoBehaviour
     }
 
     #endregion
-
     #region Button Triggered Functions
     public void SendToJson()
     {
@@ -223,7 +222,7 @@ public class UIController : MonoBehaviour
         button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
         button.GetComponent<RectTransform>().anchoredPosition = new Vector2(posX, posY);
 
-        button.GetComponentInChildren<Text>().text = "EXTERNAL";
+        button.GetComponentInChildren<Text>().text = "EXTERIOR";
 
         // add the create room function
         button.GetComponent<Button>().onClick.AddListener(() => CallCreateVoid());
