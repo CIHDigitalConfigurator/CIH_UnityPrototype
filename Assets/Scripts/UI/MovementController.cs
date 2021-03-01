@@ -145,6 +145,12 @@ public class MovementController : MonoBehaviour
             var vertices2D = Outline2DArray(tempRoom.GetComponent<MeshFilter>().mesh);
 
             validation.AddTextToValidation(rType, "name", minSize, rArea);
+            float delay = 0f;
+            if (minSize > rArea)
+            {
+                StartCoroutine(UIController.DisplayWarning(3f, "Area of the room (" + rArea + "m2) is smaller than minimum area specified for the " + rType + " room type: " + minSize + "m2"));
+                delay = 3f;
+            }
 
             // create room
             CurrentRoom = tempRoom;
@@ -168,11 +174,11 @@ public class MovementController : MonoBehaviour
 
             CurrentRoom.transform.SetParent(parentRoom.transform);
 
-            UIController.EnableInputField();
+            StartCoroutine(UIController.EnableInputField(delay));
         }
         else
         {
-            StartCoroutine(UIController.DisplayWarning(3f));
+            StartCoroutine(UIController.DisplayWarning(3f, "Room can be created only from tiles that have at least one common edge."));
             foreach (GameObject obj in selectedObjects)
             {
                 obj.SetActive(true);
@@ -225,7 +231,18 @@ public class MovementController : MonoBehaviour
         CurrentRoom.GetComponent<Renderer>().material = matExterior;
         CurrentRoom.transform.SetParent(parentExterior.transform);
 
-        CurrentRoom.name = "exterior";
+        CurrentRoom.name = "Exterior";
+
+        GameObject nameText = new GameObject();
+        nameText.AddComponent<TextMesh>();
+        nameText.GetComponent<TextMesh>().text = "Exterior";
+        nameText.transform.position = CurrentRoom.GetComponent<Renderer>().bounds.center + new Vector3(0, 0.1f, 0);
+        nameText.transform.parent = CurrentRoom.transform;
+        nameText.GetComponent<TextMesh>().alignment = TextAlignment.Center;
+        nameText.GetComponent<TextMesh>().anchor = TextAnchor.UpperCenter;
+        nameText.GetComponent<TextMesh>().characterSize = 0.1f;
+        nameText.GetComponent<TextMesh>().fontSize = 100;
+        nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
 
         Deselect();
 
@@ -367,6 +384,7 @@ public class MovementController : MonoBehaviour
             }
 
             rooms[i].GetComponent<EG_room>().Edges = edgeTypes_i;
+            Validation.CompareAreas(rooms[i]);
 
         }
 

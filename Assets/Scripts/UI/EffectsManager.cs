@@ -9,7 +9,7 @@ using UnityEngine;
 /// </summary>
 public class EffectsManager : MonoBehaviour
 {
-    
+    public Texture stripeTexture;
     #region Private Variables
 
     RaycastController raycastController;
@@ -36,7 +36,10 @@ public class EffectsManager : MonoBehaviour
         }
     }
 
-
+    public void AddTexture(GameObject obj) 
+    {
+        obj.GetComponent<Renderer>().material.SetTexture("_MainTex", stripeTexture);
+    }
     #region Internal Utilities
 
 
@@ -74,6 +77,8 @@ public class EffectsManager : MonoBehaviour
         }
 
     }
+
+
 
 
     #endregion

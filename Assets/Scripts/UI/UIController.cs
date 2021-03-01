@@ -63,9 +63,9 @@ public class UIController : MonoBehaviour
     {
         GameObject button = Instantiate(togglePrefab);
         button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
-        button.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1);
-        button.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
-        button.GetComponent<RectTransform>().anchoredPosition = new Vector2(100f, -400f);
+        button.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+        button.GetComponent<RectTransform>().anchorMax = new Vector2(0, 0);
+        button.GetComponent<RectTransform>().anchoredPosition = new Vector2(100f, 300f);
 
         button.GetComponentInChildren<Text>().text = "2D";
         button.GetComponent<Toggle>().onValueChanged.AddListener((value) => Toggle2D3D(value));
@@ -81,9 +81,9 @@ public class UIController : MonoBehaviour
         {
             GameObject button = Instantiate(togglePrefab);
             button.GetComponent<RectTransform>().SetParent(mainCanvas.transform, false);
-            button.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1);
-            button.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
-            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(100f, -200f - i*25);
+            button.GetComponent<RectTransform>().anchorMin = new Vector2(0, 0);
+            button.GetComponent<RectTransform>().anchorMax = new Vector2(0, 0);
+            button.GetComponent<RectTransform>().anchoredPosition = new Vector2(100f, 50f + i*25);
 
             var name = "Level " + levelData[i]["name"].ToString();
 
@@ -157,8 +157,9 @@ public class UIController : MonoBehaviour
         movementController.EdgeTypesWriter();
 
     }
-    public void EnableInputField() 
+    public IEnumerator EnableInputField(float delay) 
     {
+        yield return new WaitForSeconds(delay);
         // enable background image
         mainCanvas.GetComponent<Image>().enabled = true;
 
@@ -167,13 +168,13 @@ public class UIController : MonoBehaviour
 
     }
 
-    public IEnumerator DisplayWarning(float duration) 
+    public IEnumerator DisplayWarning(float duration, string warning) 
     {
         // enable background image
         mainCanvas.GetComponent<Image>().enabled = true;
 
         // enable warning screen
-        errorScreen.GetComponentInChildren<Text>().text = "Room can be created only from tiles that have at least one common edge.";
+        errorScreen.GetComponentInChildren<Text>().text = warning;
         errorScreen.SetActive(true);
         yield return new WaitForSeconds(duration);
         errorScreen.SetActive(false);

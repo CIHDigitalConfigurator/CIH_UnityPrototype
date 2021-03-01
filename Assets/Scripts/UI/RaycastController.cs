@@ -57,18 +57,13 @@ public class RaycastController : MonoBehaviour
                         clicked = true;
                         if (!rInSel) retOb = clickHit.collider.gameObject;
                     }
-                    else if (tg == "room") 
+                    else if (tg == "room" || tg == "exterior") 
                     {
                         movementController.Deselect();
                         clicked = true;
                         retOb = clickHit.collider.gameObject;
                     }
-                    else if (tg == "exterior")
-                    {
-                        movementController.Deselect();
-                        clicked = true;
-                        retOb = clickHit.collider.gameObject;
-                    }
+
                 }
             }
         }
