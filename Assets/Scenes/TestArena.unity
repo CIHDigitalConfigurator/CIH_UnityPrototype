@@ -392,6 +392,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
+      propertyPath: m_Colors.m_SelectedColor.a
+      value: 0.87058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -962,8 +982,8 @@ MonoBehaviour:
   serverUrl: https://hestia.speckle.works/api/
   startLoginEmail: 
   startLoginPassword: 
-  meshMaterial: {fileID: 2100000, guid: e46b083486507d942b87b5f1542d9548, type: 2}
-  lineMaterial: {fileID: 0}
+  meshMaterial: {fileID: 2100000, guid: c7d374aae6fc37a4581e32f659dff110, type: 2}
+  lineMaterial: {fileID: 2100000, guid: c7d374aae6fc37a4581e32f659dff110, type: 2}
   pointMaterial: {fileID: 0}
   renderingRule: {fileID: 0}
   recentreMeshTransforms: 0
@@ -1012,6 +1032,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Colors.m_NormalColor.a
       value: 0.87058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.a
+      value: 0.87058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.16862746
       objectReference: {fileID: 0}
     - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
@@ -1817,6 +1857,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
+      propertyPath: m_Colors.m_SelectedColor.a
+      value: 0.87058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -2415,6 +2475,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}
+      propertyPath: m_Colors.m_SelectedColor.a
+      value: 0.87058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -2603,6 +2683,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Colors.m_NormalColor.a
       value: 0.87058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.a
+      value: 0.87058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.b
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.g
+      value: 0.16862746
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
+        type: 3}
+      propertyPath: m_Colors.m_SelectedColor.r
+      value: 0.16862746
       objectReference: {fileID: 0}
     - target: {fileID: 3937864570721921210, guid: 7ef15fe342bf6664685f213514768e7c,
         type: 3}

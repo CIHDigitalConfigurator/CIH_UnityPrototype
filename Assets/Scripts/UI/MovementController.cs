@@ -246,6 +246,7 @@ public class MovementController : MonoBehaviour
         nameText.GetComponent<TextMesh>().fontSize = 100;
         nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
         CurrentRoom.layer = cLevel;
+        nameText.layer = cLevel;
 
         Deselect();
 
@@ -276,6 +277,7 @@ public class MovementController : MonoBehaviour
 
 
         nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
+        nameText.layer = CurrentRoom.layer;
     }
 
     public static bool AllMeshesHasCommonEdges(List<GameObject> objects)

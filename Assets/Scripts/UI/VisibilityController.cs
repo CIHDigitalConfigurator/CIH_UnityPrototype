@@ -53,17 +53,51 @@ public class VisibilityController : MonoBehaviour
 
     public void LevelHide(string layerName)
     {
-        parents = FindParents(parentNames);
-        Tuple<float,float> leveRange = FindLevelRanges(levels, layerName);
-        LoopThroughChildrenAndToggleVisibilityInRange(parents, leveRange.Item1, leveRange.Item2, false);
+        /* parents = FindParents(parentNames);
+         Tuple<float,float> leveRange = FindLevelRanges(levels, layerName);
+         LoopThroughChildrenAndToggleVisibilityInRange(parents, leveRange.Item1, leveRange.Item2, false);*/
+        ///TEMPORARY CODE
+        GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        foreach (GameObject go in gos)
+        {
+            if (go.layer == LayerMask.NameToLayer(layerName))
+            {
+                go.GetComponent<MeshRenderer>().enabled = false;
+                try
+                {
+                    go.GetComponent<MeshCollider>().enabled = false;
+                }
+                catch
+                { }
+            }
+        }
 
     }
 
     public void LevelShow(string layerName)
     {
-        parents = FindParents(parentNames);
+    
+        ///TEMPORARY CODE
+        GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        foreach (GameObject go in gos)
+        {
+            if (go.layer == LayerMask.NameToLayer(layerName))
+            {
+                go.GetComponent<MeshRenderer>().enabled = true;
+                try
+                {
+                    go.GetComponent<MeshCollider>().enabled = true;
+                }
+                catch
+                {
+
+                }
+            }
+        }
+        /*parents = FindParents(parentNames);
+        print("Foreach loop: " + child);
         Tuple<float, float> leveRange = FindLevelRanges(levels, layerName);
-        LoopThroughChildrenAndToggleVisibilityInRange(parents, leveRange.Item1, leveRange.Item2, true);
+        LoopThroughChildrenAndToggleVisibilityInRange(parents, leveRange.Item1, leveRange.Item2, true);*/
     }
 
     Tuple<float, float> FindLevelRanges(List<OM.OM_level> lvls, string layerName)
