@@ -23,19 +23,8 @@ public class Validation : MonoBehaviour
 
     }
 
-    public void AddTextToValidation(string rType, string name, float minSize, float area)
+    private void AddTextToValidation(string message)
     {
-        string message = "Room: " + name + " of type: " + rType + " has area " + (Math.Round(area)).ToString() + " m2";
-        if (area >= minSize)
-        {
-            message = message + "; minimum area: " + (Math.Round(minSize)).ToString() + "m2 // passed";
-
-        }
-        else
-        {
-            message = message + " but the minimum area should be: " + (Math.Round(minSize)).ToString() + "m2 // failed";
-        }
-
         validationMessage = validationMessage + "\n\n" + message;
     }
 
@@ -44,24 +33,38 @@ public class Validation : MonoBehaviour
 
     }
 
-    public static void CompareAreas(GameObject obj)
+    public void CompareAreas(GameObject obj)
         
     {
         
         JArray typeArray = JArray.Parse(GameObject.FindObjectOfType<UIController>().jsonReader.GetComponent<Reader>().jsonFolder["02_IN_RoomTypes"].ToString());
-
+        float minArea = 0;
+        string rType = "";
         foreach (JToken typeData in typeArray)
         {
 
-            string rName = typeData["name"].ToString().ToUpper();
-            if (rName == obj.GetComponent<EG_room>().Type)
+            rType = typeData["name"].ToString();
+            if (rType == obj.GetComponent<EG_room>().Type)
             {
-
-                if (float.Parse(typeData["min_area"].ToString()) > obj.GetComponent<EG_room>().Area) GameObject.FindObjectOfType<EffectsManager>().AddTexture(obj);
+                minArea = float.Parse(typeData["min_area"].ToString());
+                if (minArea > obj.GetComponent<EG_room>().Area) GameObject.FindObjectOfType<EffectsManager>().AddTexture(obj);
                 break;
             }
 
 
         }
+
+        string message = "Room: " + obj.name + " of type: " + rType.ToUpper() + " has area " + (Math.Round(area)).ToString() + " m2";
+        if (area >= minArea)
+        {
+            message = message + "; minimum area: " + (Math.Round(minArea)).ToString() + "m2 // <b>PASSED</b>";
+
+        }
+        else
+        {
+            message = message + " but the minimum area should be: " + (Math.Round(minArea)).ToString() + "m2 // <b>FAILED</b>";
+        }
+
+        AddTextToValidation(message);
     }
 }

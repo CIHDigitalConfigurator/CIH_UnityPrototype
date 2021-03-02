@@ -19,7 +19,7 @@ public class VisibilityController : MonoBehaviour
         StartCoroutine(DelayStart());
     }
 
-    IEnumerator DelayStart()
+    public IEnumerator DelayStart()
     {
         yield return new WaitForSeconds(2);
 

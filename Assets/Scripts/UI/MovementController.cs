@@ -131,7 +131,7 @@ public class MovementController : MonoBehaviour
     public void CreateRoom(string rType, float minSize, Color rColour, Color rColourO, bool circ)
     {
         // check whether there are no disjointed segments
-
+        LayerMask cLevel = selectedObjects[0].layer;
         if (AllMeshesHasCommonEdges(selectedObjects))
         {
             GameObject tempRoom = MergeMesh();
@@ -144,7 +144,7 @@ public class MovementController : MonoBehaviour
 
             var vertices2D = Outline2DArray(tempRoom.GetComponent<MeshFilter>().mesh);
 
-            validation.AddTextToValidation(rType, "name", minSize, rArea);
+
             float delay = 0f;
             if (minSize > rArea)
             {
@@ -171,6 +171,7 @@ public class MovementController : MonoBehaviour
             CurrentRoom.GetComponent<EG_room>().Edges = new List<bool>();
             CurrentRoom.GetComponent<EG_room>().Circulation = circ;
 
+            CurrentRoom.layer = cLevel;
 
             CurrentRoom.transform.SetParent(parentRoom.transform);
 
@@ -221,6 +222,7 @@ public class MovementController : MonoBehaviour
 
     public void CreateVoid()
     {
+        LayerMask cLevel = selectedObjects[0].layer;
         GameObject tempRoom = MergeMesh();
 
         CurrentRoom = tempRoom;
@@ -239,10 +241,11 @@ public class MovementController : MonoBehaviour
         nameText.transform.position = CurrentRoom.GetComponent<Renderer>().bounds.center + new Vector3(0, 0.1f, 0);
         nameText.transform.parent = CurrentRoom.transform;
         nameText.GetComponent<TextMesh>().alignment = TextAlignment.Center;
-        nameText.GetComponent<TextMesh>().anchor = TextAnchor.UpperCenter;
+        nameText.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
         nameText.GetComponent<TextMesh>().characterSize = 0.1f;
         nameText.GetComponent<TextMesh>().fontSize = 100;
         nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
+        CurrentRoom.layer = cLevel;
 
         Deselect();
 
@@ -264,10 +267,12 @@ public class MovementController : MonoBehaviour
         nameText.transform.position = CurrentRoom.GetComponent<Renderer>().bounds.center + new Vector3(0, 0.1f, 0);
         nameText.transform.parent = CurrentRoom.transform;
         nameText.GetComponent<TextMesh>().alignment = TextAlignment.Center;
-        nameText.GetComponent<TextMesh>().anchor = TextAnchor.UpperCenter;
+        nameText.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
         nameText.GetComponent<TextMesh>().characterSize = 0.1f;
         nameText.GetComponent<TextMesh>().fontSize = 100;
         CurrentRoom.GetComponent<EG_room>().Name = rname;
+
+        StartCoroutine(FindObjectOfType<VisibilityController>().DelayStart());
 
 
         nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
@@ -384,7 +389,7 @@ public class MovementController : MonoBehaviour
             }
 
             rooms[i].GetComponent<EG_room>().Edges = edgeTypes_i;
-            Validation.CompareAreas(rooms[i]);
+            FindObjectOfType<Validation>().CompareAreas(rooms[i]);
 
         }
 
