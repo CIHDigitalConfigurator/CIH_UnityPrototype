@@ -263,8 +263,10 @@ public class MovementController : MonoBehaviour
         string rname = inputText.text;
         CurrentRoom.name = rname;
         GameObject nameText = new GameObject();
+        nameText.transform.SetParent(CurrentRoom.transform);
         nameText.AddComponent<TextMesh>();
         nameText.GetComponent<TextMesh>().text = rname + "\n " + (Math.Round(currentArea)).ToString() + " m²";
+        nameText.name = (Math.Round(currentArea)).ToString() + " m²";
         nameText.transform.position = CurrentRoom.GetComponent<Renderer>().bounds.center + new Vector3(0, 0.1f, 0);
         nameText.transform.parent = CurrentRoom.transform;
         nameText.GetComponent<TextMesh>().alignment = TextAlignment.Center;
@@ -344,6 +346,7 @@ public class MovementController : MonoBehaviour
         return vr;
     }
 
+    // For new room, take y and find closest level value for this room
     Tuple<float, float> FindAssociatedHeightAndLevel(float meshHeight)
     {
         OM_level closestLevel = gameObject.GetComponentInParent<VisibilityController>().FindClosestLevel(meshHeight);
@@ -416,6 +419,7 @@ public class MovementController : MonoBehaviour
         {
             meshFilters[i] = selectedObjects[i].GetComponent<MeshFilter>();
             selectedObjects[i].transform.SetParent(room.transform);
+
             selectedObjects[i].SetActive(false);
             combine[i].mesh = meshFilters[i].sharedMesh;
             combine[i].transform = meshFilters[i].transform.localToWorldMatrix;

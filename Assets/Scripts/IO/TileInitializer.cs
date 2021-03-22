@@ -26,7 +26,7 @@ public class TileInitializer : MonoBehaviour
 
     IEnumerator WaitUntilJsonsAndExecute()
     {
-        yield return new WaitUntil(() => this.GetComponent<LayerInitializer>().layersCompleted);
+        yield return new WaitUntil(() => this.GetComponent<LevelInitializer>().levelsGenerated);
 
         // Get tiles values from dictionary to array
         JArray tileArray = JArray.Parse(GetComponent<Reader>().jsonFolder["02_IN_Tiles"].ToString());
@@ -53,7 +53,7 @@ public class TileInitializer : MonoBehaviour
         tile.transform.SetParent(parent.transform, false);
 
         tile.GetComponent<MeshRenderer>().material = m;
-        tile.layer = LayerMask.NameToLayer("Level " + parameters["level"].ToObject<string>());
+        //tile.layer = LayerMask.NameToLayer("Level " + parameters["level"].ToObject<string>());
 
         // child just for preview
         //GameObject childMesh = GameObject.CreatePrimitive(PrimitiveType.Cube);

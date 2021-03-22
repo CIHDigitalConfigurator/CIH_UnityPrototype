@@ -1219,7 +1219,6 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
-  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1308,19 +1307,6 @@ MonoBehaviour:
   SensitivityRotation: 2
   SensitivityPosition: 2
   SensitivityScroll: 6
---- !u!114 &963194230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd0c1acf04b62504bbc0df84630258d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  layerReader: {fileID: 1961192739}
 --- !u!1 &999847550
 GameObject:
   m_ObjectHideFlags: 0
@@ -2933,10 +2919,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1961192739}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d833faf3d9e61514089637edeba26404, type: 3}
+  m_Script: {fileID: 11500000, guid: 43327bc57f22ccd429b0d85482e79f7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layersCompleted: 0
+  levelsGenerated: 0
 --- !u!224 &1978202728 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3937864570721921211, guid: 7ef15fe342bf6664685f213514768e7c,

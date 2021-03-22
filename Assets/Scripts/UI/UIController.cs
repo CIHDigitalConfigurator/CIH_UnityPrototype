@@ -20,7 +20,6 @@ public class UIController : MonoBehaviour
     #region Private Variables
     MovementController movementController;
     RaycastController raycastController;
-    LayerVisibilityController layervisibilityController;
     VisibilityController visibilityController;
     //CameraViewsControler cameraViewsControler;
     CameraController cameraController;
@@ -42,7 +41,6 @@ public class UIController : MonoBehaviour
     {
         movementController = gameObject.GetComponent<MovementController>();
         raycastController = gameObject.GetComponent<RaycastController>();
-        layervisibilityController = Camera.main.GetComponent<LayerVisibilityController>();
         cameraController = Camera.main.GetComponent<CameraController>();
 
         //cameraViewsControler = gameObject.GetComponent<CameraViewsControler>();
