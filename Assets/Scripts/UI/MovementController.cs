@@ -236,14 +236,13 @@ public class MovementController : MonoBehaviour
         CurrentRoom.name = "Exterior";
 
         GameObject nameText = new GameObject();
-        nameText.AddComponent<TextMesh>();
-        nameText.GetComponent<TextMesh>().text = "Exterior";
+        nameText.AddComponent<TMPro.TextMeshPro>();
+        nameText.GetComponent<TMPro.TextMeshPro>().text = "Exterior";
         nameText.transform.position = CurrentRoom.GetComponent<Renderer>().bounds.center + new Vector3(0, 0.1f, 0);
         nameText.transform.parent = CurrentRoom.transform;
         nameText.GetComponent<TextMesh>().alignment = TextAlignment.Center;
-        nameText.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
-        nameText.GetComponent<TextMesh>().characterSize = 0.1f;
-        nameText.GetComponent<TextMesh>().fontSize = 100;
+        nameText.GetComponent<TMPro.TextMeshPro>().alignment = TMPro.TextAlignmentOptions.Center;
+        nameText.GetComponent<TMPro.TextMeshPro>().fontSize = 10;
         nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
         CurrentRoom.layer = cLevel;
         nameText.layer = cLevel;
@@ -264,19 +263,19 @@ public class MovementController : MonoBehaviour
         CurrentRoom.name = rname;
         GameObject nameText = new GameObject();
         nameText.transform.SetParent(CurrentRoom.transform);
-        nameText.AddComponent<TextMesh>();
-        nameText.GetComponent<TextMesh>().text = rname + "\n " + (Math.Round(currentArea)).ToString() + " m²";
+        nameText.AddComponent<TMPro.TextMeshPro>();
+        nameText.GetComponent<TMPro.TextMeshPro>().text = rname + "\n " + (Math.Round(currentArea)).ToString() + " m²";
+
         nameText.name = (Math.Round(currentArea)).ToString() + " m²";
         nameText.transform.position = CurrentRoom.GetComponent<Renderer>().bounds.center + new Vector3(0, 0.1f, 0);
         nameText.transform.parent = CurrentRoom.transform;
-        nameText.GetComponent<TextMesh>().alignment = TextAlignment.Center;
-        nameText.GetComponent<TextMesh>().anchor = TextAnchor.MiddleCenter;
-        nameText.GetComponent<TextMesh>().characterSize = 0.1f;
-        nameText.GetComponent<TextMesh>().fontSize = 100;
+
+        nameText.GetComponent<TMPro.TextMeshPro>().alignment = TMPro.TextAlignmentOptions.Center;
+        nameText.GetComponent<TMPro.TextMeshPro>().fontSize = 10;
+
         CurrentRoom.GetComponent<EG_room>().Name = rname;
 
         StartCoroutine(FindObjectOfType<VisibilityController>().DelayStart());
-
 
         nameText.transform.localRotation = Quaternion.Euler(90, 0, 0);
         nameText.layer = CurrentRoom.layer;
